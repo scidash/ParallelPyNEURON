@@ -27,7 +27,10 @@ WORKDIR openmpi-2.0.0
 
 # Compile NEURON.
 RUN \
-  ./configure 
+  ./configure && \
+  make && \
+  make install
+
 
 
 # Fetch NEURON source files, extract them, delete .tar.gz file.
