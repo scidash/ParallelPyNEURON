@@ -16,11 +16,27 @@ RUN \
 # Make ~/neuron directory to hold stuff.
 WORKDIR neuron
 
+# Fetch openmpi source files, extract them, delete .tar.gz file.
+
+RUN \
+   wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-2.0.0.tar.gz
+   tar -xzf openmpi-2.0.0.tar.gz && \
+   rm openmpi-2.0.0.tar.gz
+
+WORKDIR openmpi-2.0.0
+
+# Compile NEURON.
+RUN \
+  ./configure 
+
+
 # Fetch NEURON source files, extract them, delete .tar.gz file.
 RUN \
   wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz && \
   tar -xzf nrn-7.4.tar.gz && \
-  rm nrn-7.4.tar.gz
+  rm nrn-7.4.tar.gz && \
+  make && \
+  make install
 
 # Fetch Interviews.
 # RUN \
@@ -32,7 +48,7 @@ WORKDIR nrn-7.4
 
 # Compile NEURON.
 RUN \
-  ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/anaconda/bin/python && \
+  ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/anaconda/bin/python --with-paranrn && \
   make && \
   make install
 
