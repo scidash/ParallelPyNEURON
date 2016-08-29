@@ -5,7 +5,7 @@
 # Pull base image.
 FROM andrewosh/binder-base
 
-MAINTAINER Alex Williams <alex.h.willia@gmail.com>
+MAINTAINER By Alex Williams <alex.h.willia@gmail.com>
 
 USER root
 
@@ -28,7 +28,7 @@ WORKDIR openmpi-2.0.0
 # Compile NEURON.
 RUN \
   ./configure && \
-  make && \
+  make all && \
   make install
 
 
@@ -38,7 +38,7 @@ RUN \
   wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz && \
   tar -xzf nrn-7.4.tar.gz && \
   rm nrn-7.4.tar.gz && \
-  make && \
+  make all && \
   make install
 
 # Fetch Interviews.
