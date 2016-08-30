@@ -21,6 +21,10 @@ RUN \
 RUN \
    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
    bash Miniconda2-latest-Linux-x86_64.sh
+   git clone https://github.com/mpi4py/mpi4py
+   cd mpi4py
+   python setup.py install
+   cd ../
 # Make ~/neuron directory to hold stuff.
 WORKDIR neuron
 
