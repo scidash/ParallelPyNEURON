@@ -3,9 +3,14 @@
 #
 
 # Pull base image.
-FROM andrewosh/binder-base
+# FROM andrewosh/binder-base
 
-MAINTAINER Alex Williams <alex.h.willia@gmail.com>
+# Set the base image to Ubuntu
+FROM ubuntu
+
+# MAINTAINER Alex Williams <alex.h.willia@gmail.com>
+# and russell jarvis rjjarvis@asu.edu
+
 
 USER root
 
@@ -13,6 +18,9 @@ RUN \
   apt-get update && \
   apt-get install -y libncurses-dev
 
+RUN \
+   wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+   bash Miniconda2-latest-Linux-x86_64.sh
 # Make ~/neuron directory to hold stuff.
 WORKDIR neuron
 
@@ -35,7 +43,7 @@ RUN \
   wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz && \
   tar -xzf nrn-7.4.tar.gz && \
   rm nrn-7.4.tar.gz && \
-  make && \
+  make all && \
   make install
 
 # Fetch Interviews.
@@ -48,28 +56,12 @@ WORKDIR nrn-7.4
 
 # Compile NEURON.
 RUN \
-  ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/anaconda/bin/python --with-paranrn && \
-  make && \
+  ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/miniconda2/bin/python --with-paranrn=/usr/bin/mpiexec &&   make &&   make install
+
+  make all && \
   make install
 
 # Install python interface
 WORKDIR src/nrnpython
 RUN python setup.py install
 
-# Install PyNeuron-Toolbox
-WORKDIR $HOME
-RUN git clone https://github.com/ahwillia/PyNeuron-Toolbox
-WORKDIR PyNeuron-Toolbox
-RUN python setup.py install
-
-# Install JSAnimation
-WORKDIR $HOME
-RUN git clone https://github.com/jakevdp/JSAnimation.git
-RUN python JSAnimation/setup.py install
-
-
-ENV PYTHONPATH $PYTHONPATH:$HOME/JSAnimation/:$HOME/PyNeuron-Toolbox/
-
-# Switch back to non-root user privledges
-WORKDIR $HOME
-USER main
