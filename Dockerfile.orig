@@ -3,33 +3,28 @@
 #
 
 # Pull base image.
-FROM andrewosh/binder-base
+# FROM andrewosh/binder-base
 
 # Set the base image to Ubuntu
-# FROM ubuntu
+FROM ubuntu
 
 # MAINTAINER Alex Williams <alex.h.willia@gmail.com>
 # and russell jarvis rjjarvis@asu.edu
 
+<<<<<<< HEAD
+=======
+MAINTAINER By Alex Williams <alex.h.willia@gmail.com>
+>>>>>>> 0c2355d1616dcd30a66e51ab41980ce0f199b5fc
 
 USER root
 
 RUN \
   apt-get update && \
-  apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev
+  apt-get install -y libncurses-dev
 
 RUN \
    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
-RUN \
    bash Miniconda2-latest-Linux-x86_64.sh
-RUN \
-   git clone https://github.com/mpi4py/mpi4py
-RUN \
-   cd mpi4py
-RUN \
-   python setup.py install
-RUN \
-   cd ../
 # Make ~/neuron directory to hold stuff.
 WORKDIR neuron
 
