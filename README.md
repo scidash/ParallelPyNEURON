@@ -10,5 +10,5 @@ I have added a build of open-mpi, miniconda2, and proper config for paran
 To run try:
 
 sudo docker build -t para-nrn-python .
-
+docker images
 docker run -it ubuntu:latest /bin/bash
