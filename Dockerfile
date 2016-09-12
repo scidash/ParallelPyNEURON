@@ -119,3 +119,5 @@ WORKDIR neuroml_dev/jNeuroML
 # WORKDIR mpi4py
 
 
+RUN git clone https://github.com/rgerkin/rickpy
+
