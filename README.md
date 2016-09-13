@@ -11,4 +11,5 @@ To run try:
 
 sudo docker build -t para-nrn-python .
 docker images
-docker run -it ubuntu:latest /bin/bash
+#docker run -it ubuntu:latest /bin/bash
+docker run -it para-nrn-python:latest /bin/bash
