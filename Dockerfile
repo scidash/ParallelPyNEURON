@@ -4,19 +4,20 @@
 # This is the syntax for a directive. Don’t get confused
 
 
-# Set the base image to Ubuntu
+#Set the base image to Ubuntu
 
 FROM ubuntu
 	
 # author russell jarvis rjjarvis@asu.edu
 
-
 USER root
 
-RUN \
-  apt-get update && \
+
+
+RUN apt-get update && \
   apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev && \
-  apt-get install -y wget bzip2
+  apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre default-jdk emacs python3-mpi4py vim
+ 
 
 
 # RUN wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh 
@@ -27,6 +28,7 @@ RUN \
 RUN wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
 RUN bash miniconda.sh -b -p $HOME/miniconda
 ENV PATH $HOME/miniconda/bin:$PATH
+ENV PATH="$HOME/miniconda/bin:$PATH"
 
 #RUN export PATH=“$HOME/miniconda/bin:$PATH"
 #RUN export PATH="$HOME/miniconda/bin:$PATH"
@@ -128,6 +130,10 @@ RUN apt-get -y install vim emacs python3-mpi4py
 
 RUN $HOME/miniconda/bin/conda install ipython mpi4py
 
+#EXPOSE 27017
+#CMD ["--port 27017"]
+#ENTRYPOINT usr/bin/mongod
+
 
 
 #WORKDIR $HOME/git
@@ -140,4 +146,31 @@ RUN $HOME/miniconda/bin/conda install ipython mpi4py
 #RUN git clone https://github.com/mpi4py/mpi4py.git
 #WORKDIR mpi4py 
 #RUN $HOME/miniconda/bin/python3.4 setup.py install # build --mpicc=/usr/bin/mpicc
+
+#RUN $HOME/miniconda/bin/conda install sciunit
+
+#RUN groupadd -r swuser -g 433 && \
+#useradd -u 431 -r -g swuser -d $HOME -s /sbin/nologin "Docker image user" swuser && \
+#chown -R swuser:swuser $HOME
+
+
+RUN useradd -ms /bin/bash swuser
+USER swuser
+
+#RUN mkdir /home/swuser
+
+#RUN chown -R swuser:swuser /home/swuser
+#RUN groupadd -r swuser -g 433 
+
+# USER swuser
+#RUN mkdir homedir
+#RUN groupadd -r swuser -g 433 && \
+#useradd -u 431 -r -g swuser -d homedir -s /sbin/nologin -c "Docker image user" swuser && \
+#chown -R swuser:swuser homedir
+
+
+RUN bash -c 'echo “source nrnenv” >> /home/swuser/.bashrc'
+ENV HOME=“/home/swuser” 
+ENV PATH="$HOME/miniconda/bin:$PATH"
+
 
