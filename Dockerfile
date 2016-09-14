@@ -30,19 +30,18 @@ RUN chown -R docker:docker /home/docker
 RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
 RUN sudo bash miniconda.sh -b -p $HOME/miniconda
 ENV PATH $HOME/miniconda/bin:$PATH
-ENV PATH="$HOME/miniconda/bin:$PATH"
 
 
 RUN sudo apt-get install -y gcc g++ build-essential
 
-
+WORKDIR /home/docker
 
 RUN \
    sudo wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-2.0.0.tar.gz && \
    sudo tar -xzf openmpi-2.0.0.tar.gz && \
    sudo rm openmpi-2.0.0.tar.gz
 
-WORKDIR openmpi-2.0.0
+WORKDIR /home/docker/openmpi-2.0.0
 
 # Compile openmpi
 RUN \
@@ -50,15 +49,17 @@ RUN \
   sudo make all && \
   sudo make install
 
-WORKDIR $HOME/neuron
+WORKDIR /home/docker/neuron
 # Fetch NEURON source files, extract them, delete .tar.gz file.
 RUN \
-  wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz && \
-  tar -xzf nrn-7.4.tar.gz && \
-  rm nrn-7.4.tar.gz 
-WORKDIR nrn-7.4
-CMD $HOME/miniconda/bin/python3.4 -c “print(‘blah’)”
-CMD python --version
+  sudo wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz && \
+  sudo tar -xzf nrn-7.4.tar.gz && \
+  sudo rm nrn-7.4.tar.gz 
+
+WORKDIR /home/docker/neuron/nrn-7.4
+
+#CMD sudo $HOME/miniconda/bin/python3.4 -c “print(‘blah’)”
+#CMD python --version
 
 
 RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/miniconda/bin/python3.4 --with-paranrn=/usr/bin/mpiexec
@@ -70,15 +71,19 @@ RUN sudo make all && \
 WORKDIR src/nrnpython
 RUN sudo $HOME/miniconda/bin/python3.4 setup.py install
 
+ENV PYTHONPATH=/home/docker/miniconda/bin:$PATH"
+ENV HOME=/home/docker
+
 # RUN apt-get install -y python-setuptools python-dev build-essential
 
-WORKDIR $HOME/git
 RUN sudo $HOME/miniconda/bin/conda install scipy numpy
 RUN sudo apt-get -y install git xterm
+
 WORKDIR $HOME/git
-RUN git clone https://github.com/russelljjarvis/nrnenv
+WORKDIR $HOME/git
+RUN sudo git clone https://github.com/russelljjarvis/nrnenv
 RUN sudo apt-get -y install default-jre default-jdk
-RUN wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 RUN sudo $HOME/miniconda/bin/conda install mpi4py
 RUN sudo apt-get -y install vim emacs python3-mpi4py
 RUN sudo $HOME/miniconda/bin/conda install ipython mpi4py
