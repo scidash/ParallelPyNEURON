@@ -23,7 +23,9 @@ RUN sudo apt-get update && \
   sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre default-jdk emacs python3-mpi4py vim
 
 
-
+WORKDIR /home/docker
+RUN chown -R docker:docker /home/docker
+#RUN sudo chown -R /home/docker
 
 RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
 RUN sudo bash miniconda.sh -b -p $HOME/miniconda
@@ -36,15 +38,15 @@ RUN sudo apt-get install -y gcc g++ build-essential
 
 
 RUN \
-   wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-2.0.0.tar.gz && \
-   tar -xzf openmpi-2.0.0.tar.gz && \
-   rm openmpi-2.0.0.tar.gz
+   sudo wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-2.0.0.tar.gz && \
+   sudo tar -xzf openmpi-2.0.0.tar.gz && \
+   sudo rm openmpi-2.0.0.tar.gz
 
 WORKDIR openmpi-2.0.0
 
 # Compile openmpi
 RUN \
-  ./configure && \
+  sudo ./configure && \
   sudo make all && \
   sudo make install
 
@@ -59,7 +61,7 @@ CMD $HOME/miniconda/bin/python3.4 -c “print(‘blah’)”
 CMD python --version
 
 
-RUN ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/miniconda/bin/python3.4 --with-paranrn=/usr/bin/mpiexec
+RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/miniconda/bin/python3.4 --with-paranrn=/usr/bin/mpiexec
 RUN sudo make all && \
    sudo make install
 
