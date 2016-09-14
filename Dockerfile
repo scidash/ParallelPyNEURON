@@ -2,22 +2,47 @@
 #NEURON Dockerfile
 #Not docker comments must be of this form.
 # This is the syntax for a directive. Don’t get confused
-
-
 #Set the base image to Ubuntu
 
 FROM ubuntu
 	
 # author russell jarvis rjjarvis@asu.edu
 
+RUN useradd -ms /bin/bash docker
+
 USER root
+RUN apt-get update \
+      && apt-get install -y sudo \
+      && rm -rf /var/lib/apt/lists/*
+RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
+CMD cat /etc/sudoers 
+USER docker
 
-
-
-RUN apt-get update && \
+RUN sudo apt-get update && \
   apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev && \
   apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre default-jdk emacs python3-mpi4py vim
- 
+
+
+#RUN apt-get update && \
+#  apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev && \
+#  apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre d#efault-jdk emacs python3-mpi4py vim
+
+#USER root
+#RUN apt-get update && \
+#      apt-get -y install sudo
+#RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+#USER docker
+#CMD /bin/bash
+#RUN useradd -ms /bin/bash swuser
+
+#USER swuser
+#RUN bash -c 'echo “source nrnenv” >> /home/swuser/.bashrc'
+#ENV HOME=“/home/swuser” 
+#ENV PATH="$HOME/miniconda/bin:$PATH"
+#RUN su docker -c "apt-get install -y wget vim"
+#CMD /bin/bash
+
+
 
 
 # RUN wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh 
@@ -26,16 +51,16 @@ RUN apt-get update && \
 
 
 RUN wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
-RUN bash miniconda.sh -b -p $HOME/miniconda
+RUN sudo bash miniconda.sh -b -p $HOME/miniconda
 ENV PATH $HOME/miniconda/bin:$PATH
 ENV PATH="$HOME/miniconda/bin:$PATH"
 
 #RUN export PATH=“$HOME/miniconda/bin:$PATH"
 #RUN export PATH="$HOME/miniconda/bin:$PATH"
-#Next  Previous
+#Next Previous
 
 
-RUN apt-get install -y gcc g++ build-essential
+RUN sudo apt-get install -y gcc g++ build-essential
 
 
 
@@ -154,8 +179,6 @@ RUN $HOME/miniconda/bin/conda install ipython mpi4py
 #chown -R swuser:swuser $HOME
 
 
-RUN useradd -ms /bin/bash swuser
-USER swuser
 
 #RUN mkdir /home/swuser
 
@@ -168,9 +191,5 @@ USER swuser
 #useradd -u 431 -r -g swuser -d homedir -s /sbin/nologin -c "Docker image user" swuser && \
 #chown -R swuser:swuser homedir
 
-
-RUN bash -c 'echo “source nrnenv” >> /home/swuser/.bashrc'
-ENV HOME=“/home/swuser” 
-ENV PATH="$HOME/miniconda/bin:$PATH"
 
 
