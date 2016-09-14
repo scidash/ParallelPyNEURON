@@ -17,19 +17,25 @@ RUN apt-get update \
 RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
 CMD cat /etc/sudoers 
 USER docker
-
-RUN sudo apt-get update && \
-  sudo apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev && \
-  sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre default-jdk emacs python3-mpi4py vim
-
-
 WORKDIR /home/docker
 RUN chown -R docker:docker /home/docker
-#RUN sudo chown -R /home/docker
+
+RUN sudo apt-get update && \
+  sudo apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev 
+
+RUN sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre default-jdk emacs vim  bzip2 ca-certificates 
+
+RUN sudo apt-get libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion
 
 RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
 RUN sudo bash miniconda.sh -b -p $HOME/miniconda
+ENV HOME /home/docker
+
 ENV PATH $HOME/miniconda/bin:$PATH
+ENV PYTHONPATH /home/docker/miniconda/bin:$PATH
+RUN sudo conda install scipy numpy
+
+#ENV PATH /opt/conda/bin:$PATH
 
 
 RUN sudo apt-get install -y gcc g++ build-essential
@@ -49,6 +55,29 @@ RUN \
   sudo make all && \
   sudo make install
 
+
+# RUN apt-get install -y python-setuptools python-dev build-essential
+
+RUN sudo apt-get -y install git xterm
+
+WORKDIR $HOME/git
+WORKDIR $HOME/git
+RUN sudo git clone https://github.com/russelljjarvis/nrnenv
+RUN sudo apt-get -y install default-jre default-jdk
+RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+RUN sudo $HOME/miniconda/bin/conda install mpi4py ipython
+RUN sudo conda
+#RUN sudo apt-get -y install vim emacs python3-mpi4py
+#RUN sudo $HOME/miniconda/bin/conda install ipython mpi4py
+
+RUN sudo chown -R docker $HOME
+
+
+
+
+ENV PYTHONHOME /home/docker/miniconda/bin/python3
+ENV PYTHONHOME /home/docker/miniconda/bin/python3
+
 WORKDIR /home/docker/neuron
 # Fetch NEURON source files, extract them, delete .tar.gz file.
 RUN \
@@ -58,37 +87,20 @@ RUN \
 
 WORKDIR /home/docker/neuron/nrn-7.4
 
-#CMD sudo $HOME/miniconda/bin/python3.4 -c “print(‘blah’)”
-#CMD python --version
 
 
-RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=$HOME/miniconda/bin/python3.4 --with-paranrn=/usr/bin/mpiexec
+RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=$PYTHONHOME --with-paranrn=/usr/bin/mpiexec
 RUN sudo make all && \
    sudo make install
 
-# Install python interface
 
 WORKDIR src/nrnpython
 RUN sudo $HOME/miniconda/bin/python3.4 setup.py install
 
-ENV PYTHONPATH=/home/docker/miniconda/bin:$PATH"
-ENV HOME=/home/docker
-
-# RUN apt-get install -y python-setuptools python-dev build-essential
-
-RUN sudo $HOME/miniconda/bin/conda install scipy numpy
-RUN sudo apt-get -y install git xterm
-
 WORKDIR $HOME/git
+RUN sudo git clone https://github.com/scidash/sciunit
 WORKDIR $HOME/git
-RUN sudo git clone https://github.com/russelljjarvis/nrnenv
-RUN sudo apt-get -y install default-jre default-jdk
-RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-RUN sudo $HOME/miniconda/bin/conda install mpi4py
-RUN sudo apt-get -y install vim emacs python3-mpi4py
-RUN sudo $HOME/miniconda/bin/conda install ipython mpi4py
-
-
+RUN sudo git clone https://github.com/scidash/neuronunit
 
 #RUN export PATH=“$HOME/miniconda/bin:$PATH"
 #RUN export PATH="$HOME/miniconda/bin:$PATH"
