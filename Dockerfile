@@ -5,7 +5,28 @@
 #Set the base image to Ubuntu
 
 FROM ubuntu
-	
+
+#DO this part as root.
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 \
+    git mercurial subversion
+
+RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh
+
+RUN apt-get install -y curl grep sed dpkg && \
+    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
+    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
+    dpkg -i tini.deb && \
+    rm tini.deb && \
+    apt-get clean
+
+ENV PATH /opt/conda/bin:$PATH
+
+# Do this part as user:
 # author russell jarvis rjjarvis@asu.edu
 
 RUN useradd -ms /bin/bash docker
@@ -15,27 +36,38 @@ RUN apt-get update \
       && apt-get install -y sudo \
       && rm -rf /var/lib/apt/lists/*
 RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
-CMD cat /etc/sudoers 
+#CMD cat /etc/sudoers 
+
+
 USER docker
 WORKDIR /home/docker
 RUN chown -R docker:docker /home/docker
+
+ENV PATH /opt/conda/bin:$PATH
+RUN sudo /opt/conda/bin/conda install -y scipy numpy
+
 
 RUN sudo apt-get update && \
   sudo apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev 
 
 RUN sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default-jre default-jdk emacs vim  bzip2 ca-certificates 
 
-RUN sudo apt-get libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion
+RUN sudo apt-get install -y libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion
 
-RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
-RUN sudo bash miniconda.sh -b -p $HOME/miniconda
+#RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
+#RUN sudo bash miniconda.sh -b -p $HOME/miniconda
 ENV HOME /home/docker
 
-ENV PATH $HOME/miniconda/bin:$PATH
-ENV PYTHONPATH /home/docker/miniconda/bin:$PATH
-RUN sudo conda install scipy numpy
+#ENV PATH $HOME/miniconda/bin:$PATH
+ENV PYTHONPATH $HOME/miniconda/bin:$PATH
+RUN alias conda='bash /home/docker/miniconda/bin/conda'
+CMD HOME="/home/docker"
+CMD PATH="$HOME/miniconda/bin:$PATH"
+CMD PYTHONPATH="$HOME/miniconda/bin:$PATH"
 
-#ENV PATH /opt/conda/bin:$PATH
+CMD source $PATH
+CMD source $PYTHONPATH
+
 
 
 RUN sudo apt-get install -y gcc g++ build-essential
@@ -65,12 +97,14 @@ WORKDIR $HOME/git
 RUN sudo git clone https://github.com/russelljjarvis/nrnenv
 RUN sudo apt-get -y install default-jre default-jdk
 RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-RUN sudo $HOME/miniconda/bin/conda install mpi4py ipython
-RUN sudo conda
+RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
+#RUN sudo conda
+
+
 #RUN sudo apt-get -y install vim emacs python3-mpi4py
 #RUN sudo $HOME/miniconda/bin/conda install ipython mpi4py
 
-RUN sudo chown -R docker $HOME
+#RUN sudo chown -R docker $HOME
 
 
 
@@ -89,7 +123,7 @@ WORKDIR /home/docker/neuron/nrn-7.4
 
 
 
-RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=$PYTHONHOME --with-paranrn=/usr/bin/mpiexec
+RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python3.4 --with-paranrn=/usr/bin/mpiexec
 RUN sudo make all && \
    sudo make install
 
