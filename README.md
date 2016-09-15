@@ -1,14 +1,16 @@
 
-## A script to build open-mpi, NEURON-7.4, miniconda python3, all working togethor.
 
-Soon I will add neuronunit/sciunit and JNeuroML
+# A script to build open-mpi, NEURON-7.4, miniconda python3, all working togethor, trying to make it such that no one I am personally friends with has to do this ugly and non edifying work ever again.
 
-## To build try navigate to this directory (oh wait your here) and try:
+# TODO: add neuronunit/sciunit and JNeuroML
+
+# 1 get docker 
+# 2 After running gitclone navigate to the directory containing this file and run
 
 sudo docker build -t para-nrn-python .
 
-## To confirm build made an image:
+#3 To confirm build made an image:
 docker images
 
-## To launch the built ubuntu image try:
+#4 To launch the built ubuntu image try:
 docker run -it para-nrn-python:latest /bin/bash
