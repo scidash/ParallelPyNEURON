@@ -69,21 +69,22 @@ RUN sudo apt-get -y install git xterm
 #Desperately try to set environmentle variables, 
 #It would be great to know which of the following statements are effective.
 
-ENV HOME /home/docker 
-ENV PYTHONPATH $HOME/miniconda/bin:$PATH
-#RUN alias conda='bash /home/docker/miniconda/bin/conda'
-CMD HOME="/home/docker"
-CMD PATH="$HOME/miniconda/bin:$PATH"
-CMD PYTHONPATH="$HOME/miniconda/bin:$PATH"
 
-CMD source $PATH
-CMD source $PYTHONPATH
+#CMD PATH="$HOME/miniconda/bin:$PATH"
+#CMD PYTHONPATH="$HOME/miniconda/bin:$PATH"
+#ENV PYTHONPATH $HOME/miniconda/bin:$PATH
+#RUN alias conda='bash /home/docker/miniconda/bin/conda'
+
+#CMD source $PATH
+#CMD source $PYTHONPATH
 
 #Only the following statements are effective at setting path, and the one that sets home.
 #The statements that set paths above are not effective
 #however these steps below are effective, so they will replace the ones above.
 
 
+ENV HOME /home/docker 
+CMD HOME="/home/docker"
 RUN unset PYTHONPATH
 RUN unset PYTHONHOME
 RUN export PYTHONPATH=/opt/conda/bin/python
@@ -118,8 +119,10 @@ RUN sudo tar -xzf apache-maven-3.3.9-bin.tar.gz
 RUN sudo rm apache-maven-3.3.9-bin.tar.gz
 WORKDIR $HOME/apache-maven-3.3.9-bin/
 
-RUN export PATH=$PATH:$HOME/apache-maven-3.3.9-bin/mvn:$HOME/apache-maven-3.3.9-bin
 
+
+#export PATH=/opt/apache-maven-3.3.9/bin:$PATH
+RUN export PATH=$HOME/apache-maven-3.3.9-bin:$PATH
 
 #RUN ln -s apach
 
