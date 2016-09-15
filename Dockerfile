@@ -44,6 +44,8 @@ WORKDIR /home/docker
 RUN chown -R docker:docker /home/docker
 
 ENV PATH /opt/conda/bin:$PATH
+RUN /opt/conda/bin/python -c "print('hello?')"
+
 RUN sudo /opt/conda/bin/conda install -y scipy numpy
 
 
@@ -94,7 +96,6 @@ RUN sudo apt-get -y install git xterm
 
 WORKDIR $HOME/git
 WORKDIR $HOME/git
-RUN sudo git clone https://github.com/russelljjarvis/nrnenv
 RUN sudo apt-get -y install default-jre default-jdk
 RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
@@ -109,8 +110,8 @@ RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
 
 
 
-ENV PYTHONHOME /home/docker/miniconda/bin/python3
-ENV PYTHONHOME /home/docker/miniconda/bin/python3
+#ENV PYTHONHOME /home/docker/miniconda/bin/python3
+#ENV PYTHONHOME /home/docker/miniconda/bin/python3
 
 WORKDIR /home/docker/neuron
 # Fetch NEURON source files, extract them, delete .tar.gz file.
@@ -123,18 +124,37 @@ WORKDIR /home/docker/neuron/nrn-7.4
 
 
 
-RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python3.4 --with-paranrn=/usr/bin/mpiexec
+RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python --with-paranrn=/usr/bin/mpiexec
 RUN sudo make all && \
    sudo make install
 
 
 WORKDIR src/nrnpython
-RUN sudo $HOME/miniconda/bin/python3.4 setup.py install
+RUN sudo /opt/conda/bin/python setup.py install
+RUN unset PYTHONPATH
+RUN unset PYTHONHOME
+RUN export PYTHONPATH=/opt/conda/bin/python
+RUN export PYTHONHOME=/opt/conda/bin/python
+
 
 WORKDIR $HOME/git
 RUN sudo git clone https://github.com/scidash/sciunit
+WORKDIR sciunit
+RUN sudo python setup.py install
 WORKDIR $HOME/git
 RUN sudo git clone https://github.com/scidash/neuronunit
+WORKDIR neuronunit
+RUN sudo python setup.py install
+WORKDIR $HOME/git
+RUN sudo git clone https://github.com/russelljjarvis/traub_LFPy
+RUN sudo git clone https://github.com/russelljjarvis/nrnenv
+
+
+RUN cp $HOME/git/nrnenv/nrnenv $HOME
+RUN echo "source nrnenv" >> ~/.bashrc
+RUN echo "source nrnenv" >> ~/.profile 
+RUN sudo chown -R docker $HOME
+
 
 #RUN export PATH=“$HOME/miniconda/bin:$PATH"
 #RUN export PATH="$HOME/miniconda/bin:$PATH"
