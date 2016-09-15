@@ -1,15 +1,14 @@
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.12576.png)](http://dx.doi.org/10.5281/zenodo.12576) [![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/ahwillia/PyNeuron-Toolbox)
 
+## A script to build open-mpi, NEURON-7.4, miniconda python3, all working togethor.
 
-Russell's note: I don't know what the PyNeuron-Toolbox does, but it looks like someone has helped us automate the building of NEURON+Python+MPI
+Soon I will add neuronunit/sciunit and JNeuroML
 
-
-
-I have added a build of open-mpi, miniconda2, and proper config for paran
-
-To run try:
+## To build try navigate to this directory (oh wait your here) and try:
 
 sudo docker build -t para-nrn-python .
+
+## To confirm build made an image:
 docker images
-#docker run -it ubuntu:latest /bin/bash
+
+## To launch the built ubuntu image try:
 docker run -it para-nrn-python:latest /bin/bash
