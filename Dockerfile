@@ -1,12 +1,14 @@
+#author russell jarvis rjjarvis@asu.edu
 
 #NEURON Dockerfile
-#Not docker comments must be of this form.
+#Docker comments must be of this form.
 # This is the syntax for a directive. Don’t get confused
 #Set the base image to Ubuntu
 
 FROM ubuntu
 
 #DO this part as root.
+#This is copied from the docker container for anaconda
 
 RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
@@ -26,8 +28,8 @@ RUN apt-get install -y curl grep sed dpkg && \
 
 ENV PATH /opt/conda/bin:$PATH
 
-# Do this part as user:
-# author russell jarvis rjjarvis@asu.edu
+#Do the rest of the build  as user:
+#This will create a more familiar environment to continue developing in.
 
 RUN useradd -ms /bin/bash docker
 
@@ -45,9 +47,9 @@ RUN chown -R docker:docker /home/docker
 
 ENV PATH /opt/conda/bin:$PATH
 RUN /opt/conda/bin/python -c "print('hello?')"
-
 RUN sudo /opt/conda/bin/conda install -y scipy numpy
 
+#Get a whole lot of GNU core development tools
 
 RUN sudo apt-get update && \
   sudo apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev 
@@ -56,13 +58,20 @@ RUN sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default
 
 RUN sudo apt-get install -y libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion
 
+RUN sudo apt-get install -y gcc g++ build-essential
+RUN sudo apt-get -y install git xterm
+
+
 #RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
 #RUN sudo bash miniconda.sh -b -p $HOME/miniconda
-ENV HOME /home/docker
 
-#ENV PATH $HOME/miniconda/bin:$PATH
+
+#Desperately try to set environmentle variables, 
+#It would be great to know which of the following statements are effective.
+
+ENV HOME /home/docker 
 ENV PYTHONPATH $HOME/miniconda/bin:$PATH
-RUN alias conda='bash /home/docker/miniconda/bin/conda'
+#RUN alias conda='bash /home/docker/miniconda/bin/conda'
 CMD HOME="/home/docker"
 CMD PATH="$HOME/miniconda/bin:$PATH"
 CMD PYTHONPATH="$HOME/miniconda/bin:$PATH"
@@ -70,9 +79,8 @@ CMD PYTHONPATH="$HOME/miniconda/bin:$PATH"
 CMD source $PATH
 CMD source $PYTHONPATH
 
+#Install General MPI, such that mpi4py can later bind with it.
 
-
-RUN sudo apt-get install -y gcc g++ build-essential
 
 WORKDIR /home/docker
 
@@ -89,29 +97,25 @@ RUN \
   sudo make all && \
   sudo make install
 
+#Download  maven, and its java dependencies
 
-# RUN apt-get install -y python-setuptools python-dev build-essential
-
-RUN sudo apt-get -y install git xterm
-
-WORKDIR $HOME/git
 WORKDIR $HOME/git
 RUN sudo apt-get -y install default-jre default-jdk
 RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+RUN sudo tar -xzf apache-maven-3.3.9-bin.tar.gz
+RUN sudo rm apache-maven-3.3.9-bin.tar.gz
+WORKDIR $HOME/apache-maven-3.3.9-bin
+#RUN ln -s apach
+
+#TODO: Download jNeuroML at some stage here.
+
+
 RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
-#RUN sudo conda
 
 
-#RUN sudo apt-get -y install vim emacs python3-mpi4py
-#RUN sudo $HOME/miniconda/bin/conda install ipython mpi4py
+#Install NEURON-7.4 with python, with MPI. An infamous build process,
+#and much of the motivation for this docker container
 
-#RUN sudo chown -R docker $HOME
-
-
-
-
-#ENV PYTHONHOME /home/docker/miniconda/bin/python3
-#ENV PYTHONHOME /home/docker/miniconda/bin/python3
 
 WORKDIR /home/docker/neuron
 # Fetch NEURON source files, extract them, delete .tar.gz file.
@@ -123,7 +127,6 @@ RUN \
 WORKDIR /home/docker/neuron/nrn-7.4
 
 
-
 RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python --with-paranrn=/usr/bin/mpiexec
 RUN sudo make all && \
    sudo make install
@@ -131,6 +134,11 @@ RUN sudo make all && \
 
 WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
+
+#Only the following statements are effective at setting path, and the one that sets home.
+#The statements that set paths above are not effective
+#do these steps above instead.
+
 RUN unset PYTHONPATH
 RUN unset PYTHONHOME
 RUN export PYTHONPATH=/opt/conda/bin/python
@@ -142,20 +150,51 @@ RUN sudo git clone https://github.com/scidash/sciunit
 WORKDIR sciunit
 RUN sudo python setup.py install
 WORKDIR $HOME/git
+
 RUN sudo git clone https://github.com/scidash/neuronunit
+RUN git branch dev
+RUN git pull origin dev
 WORKDIR neuronunit
+
 RUN sudo python setup.py install
 WORKDIR $HOME/git
+RUN git branch dev
+RUN git pull origin dev
+
+#The repository below is only usefull for testing if MPI+PY+NEURON work okay togethor
 RUN sudo git clone https://github.com/russelljjarvis/traub_LFPy
-RUN sudo git clone https://github.com/russelljjarvis/nrnenv
 
 
 RUN cp $HOME/git/nrnenv/nrnenv $HOME
-RUN echo "source nrnenv" >> ~/.bashrc
-RUN echo "source nrnenv" >> ~/.profile 
+RUN echo "export N=$HOME/neuron/nrn-7.4">>~/.bashrc
+RUN echo "export CPU=x86_64">>~/.bashrc
+RUN path_string="$IV/$CPU/bin:$N/$CPU/bin:$PATH\"
+RUN echo "export PATH=${path_string}">>~/.bashrc	
+
+
+#RUN eval echo "export PATH=\"$IV/$CPU/bin:$N/$CPU/bin:$PATH\"">>~/.bashrc
+
+
+#make sure the user can execute all the source code installed to their user space.
+#installing with sudo can sometimes make root the owner of files for reasons I don't understand
+
 RUN sudo chown -R docker $HOME
 
 
+
+#Cruft to delete follows:
+
+#RUN sudo conda
+#RUN sudo apt-get -y install vim emacs python3-mpi4py
+#RUN sudo $HOME/miniconda/bin/conda install ipython mpi4py
+#RUN sudo chown -R docker $HOME
+#ENV PYTHONHOME /home/docker/miniconda/bin/python3
+#ENV PYTHONHOME /home/docker/miniconda/bin/python3
+
+#RUN sudo apt-get install docker
+
+#RUN echo "source nrnenv" >> ~/.bashrc
+#RUN echo "source nrnenv" >> ~/.profile 
 #RUN export PATH=“$HOME/miniconda/bin:$PATH"
 #RUN export PATH="$HOME/miniconda/bin:$PATH"
 #Next Previous
