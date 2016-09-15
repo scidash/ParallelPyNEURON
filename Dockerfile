@@ -15,18 +15,25 @@ RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificate
     git mercurial subversion
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
-    wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O ~/miniconda.sh && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh
 
-RUN apt-get install -y curl grep sed dpkg && \
-    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
-    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
-    dpkg -i tini.deb && \
-    rm tini.deb && \
-    apt-get clean
 
-ENV PATH /opt/conda/bin:$PATH
+#RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+#    wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O ~/miniconda.sh && \
+#    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+#    rm ~/miniconda.sh
+    
+
+#RUN apt-get install -y curl grep sed dpkg && \
+#    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
+#    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
+#    dpkg -i tini.deb && \
+#    rm tini.deb && \
+#    apt-get clean
+
+#ENV PATH /opt/conda/bin:$PATH
 
 #Do the rest of the build  as user:
 #This will create a more familiar environment to continue developing in.
@@ -45,9 +52,10 @@ USER docker
 WORKDIR /home/docker
 RUN chown -R docker:docker /home/docker
 
-ENV PATH /opt/conda/bin:$PATH
+#ENV PATH /opt/conda/bin:$PATH
 RUN /opt/conda/bin/python -c "print('hello?')"
-RUN sudo /opt/conda/bin/conda install -y scipy numpy
+RUN sudo python -c "print('hello')"
+RUN sudo /opt/conda/bin/conda install scipy numpy
 
 #Get a whole lot of GNU core development tools
 
@@ -59,7 +67,6 @@ RUN sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default
 RUN sudo apt-get install -y libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion
 
 RUN sudo apt-get install -y gcc g++ build-essential
-RUN sudo apt-get -y install git xterm maven
 
 
 #RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
@@ -122,15 +129,11 @@ RUN sudo apt-get -y install default-jre default-jdk maven
 
 
 #export PATH=/opt/apache-maven-3.3.9/bin:$PATH
-RUN export PATH=$HOME/apache-maven-3.3.9-bin/bin:$PATH
+#RUN export PATH=$HOME/apache-maven-3.3.9-bin/bin:$PATH
 
 #RUN ln -s apach
 
 #TODO: Download jNeuroML at some stage here.
-WORKDIR $HOME/git
-RUN sudo git clone https://github.com/NeuroML/jNeuroML.git
-WORKDIR jNeuroML
-RUN sudo python getNeuroML.py
 
 WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
@@ -159,32 +162,40 @@ WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
 
 
+#RUN sudo apt-get install xterm maven
+#WORKDIR $HOME/git
+#RUN sudo git clone https://github.com/NeuroML/jNeuroML.git
+#WORKDIR jNeuroML
+#RUN sudo python getNeuroML.py
 
 
-WORKDIR $HOME/git
-RUN sudo git clone https://github.com/scidash/sciunit
-WORKDIR sciunit
-RUN sudo python setup.py install
-WORKDIR $HOME/git
+
+#RUN sudo apt-get -y install git xterm maven
+
+#WORKDIR $HOME/git
+#RUN sudo git clone https://github.com/scidash/sciunit
+#WORKDIR sciunit
+#RUN sudo python setup.py install
+#WORKDIR $HOME/git
 
 #RUN sudo git clone https://github.com/scidash/neuronunit
 #RUN git branch dev
 #RUN git pull origin dev
 #WORKDIR neuronunit
 
-RUN sudo python setup.py install
-WORKDIR $HOME/git
-RUN git branch dev
-RUN git pull origin dev
+#RUN sudo python setup.py install
+#WORKDIR $HOME/git
+#RUN git branch dev
+#RUN git pull origin dev
 
 #The repository below is only usefull for testing if MPI+PY+NEURON work okay togethor
 RUN sudo git clone https://github.com/russelljjarvis/traub_LFPy
 
 
-RUN cp $HOME/git/nrnenv/nrnenv $HOME
+#RUN cp $HOME/git/nrnenv/nrnenv $HOME
 RUN echo "export N=$HOME/neuron/nrn-7.4">>~/.bashrc
 RUN echo "export CPU=x86_64">>~/.bashrc
-RUN path_string="$IV/$CPU/bin:$N/$CPU/bin:$PATH\"
+RUN path_string="$IV/$CPU/bin:$N/$CPU/bin:$PATH"
 RUN echo "export PATH=${path_string}">>~/.bashrc	
 
 
