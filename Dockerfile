@@ -79,6 +79,18 @@ CMD PYTHONPATH="$HOME/miniconda/bin:$PATH"
 CMD source $PATH
 CMD source $PYTHONPATH
 
+#Only the following statements are effective at setting path, and the one that sets home.
+#The statements that set paths above are not effective
+#however these steps below are effective, so they will replace the ones above.
+
+
+RUN unset PYTHONPATH
+RUN unset PYTHONHOME
+RUN export PYTHONPATH=/opt/conda/bin/python
+RUN export PYTHONHOME=/opt/conda/bin/python
+
+
+
 #Install General MPI, such that mpi4py can later bind with it.
 
 
@@ -104,12 +116,20 @@ RUN sudo apt-get -y install default-jre default-jdk
 RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 RUN sudo tar -xzf apache-maven-3.3.9-bin.tar.gz
 RUN sudo rm apache-maven-3.3.9-bin.tar.gz
-WORKDIR $HOME/apache-maven-3.3.9-bin
+WORKDIR $HOME/apache-maven-3.3.9-bin/
+
+RUN export PATH=$PATH:$HOME/apache-maven-3.3.9-bin/mvn:$HOME/apache-maven-3.3.9-bin
+
+
 #RUN ln -s apach
 
 #TODO: Download jNeuroML at some stage here.
+WORKDIR $HOME/git
+RUN sudo git clone https://github.com/NeuroML/jNeuroML.git
+WORKDIR jNeuroML
+RUN sudo python getNeuroML.py
 
-
+WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
 
 
@@ -135,14 +155,7 @@ RUN sudo make all && \
 WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
 
-#Only the following statements are effective at setting path, and the one that sets home.
-#The statements that set paths above are not effective
-#do these steps above instead.
 
-RUN unset PYTHONPATH
-RUN unset PYTHONHOME
-RUN export PYTHONPATH=/opt/conda/bin/python
-RUN export PYTHONHOME=/opt/conda/bin/python
 
 
 WORKDIR $HOME/git
@@ -151,10 +164,10 @@ WORKDIR sciunit
 RUN sudo python setup.py install
 WORKDIR $HOME/git
 
-RUN sudo git clone https://github.com/scidash/neuronunit
-RUN git branch dev
-RUN git pull origin dev
-WORKDIR neuronunit
+#RUN sudo git clone https://github.com/scidash/neuronunit
+#RUN git branch dev
+#RUN git pull origin dev
+#WORKDIR neuronunit
 
 RUN sudo python setup.py install
 WORKDIR $HOME/git
