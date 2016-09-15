@@ -1,7 +1,7 @@
 .ipynb_checkpoints/
 build/
 PyNeuronToolbox/*.pyc
-PyNeuronToolbox
+/PyNeuronToolbox
 Dockerfile.orig 
 geo5038804.hoc 	
 LICENSE
