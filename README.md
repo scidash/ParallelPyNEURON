@@ -1,6 +1,8 @@
 
 
-# A script to build open-mpi, NEURON-7.4, miniconda python3, all working togethor, trying to make it such that no one I am personally friends with has to do this ugly and non edifying work ever again.
+# A script to build open-mpi, NEURON-7.4, miniconda python3 all working togethor
+
+Purpose: I am trying to arrange that no one I am personally friends with has to do this ugly and non edifying work ever again.
 
 # TODO: add neuronunit/sciunit and JNeuroML
 
