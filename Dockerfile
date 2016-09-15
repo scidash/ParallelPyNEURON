@@ -59,7 +59,7 @@ RUN sudo apt-get install -y wget bzip2 git xterm gcc g++ build-essential default
 RUN sudo apt-get install -y libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion
 
 RUN sudo apt-get install -y gcc g++ build-essential
-RUN sudo apt-get -y install git xterm
+RUN sudo apt-get -y install git xterm maven
 
 
 #RUN sudo wget http://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh
@@ -113,16 +113,16 @@ RUN \
 #Download  maven, and its java dependencies
 
 WORKDIR $HOME/git
-RUN sudo apt-get -y install default-jre default-jdk
-RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-RUN sudo tar -xzf apache-maven-3.3.9-bin.tar.gz
-RUN sudo rm apache-maven-3.3.9-bin.tar.gz
-WORKDIR $HOME/apache-maven-3.3.9-bin/
+RUN sudo apt-get -y install default-jre default-jdk maven
+#RUN sudo wget http://apache.mesi.com.ar/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+#RUN sudo tar -xzf apache-maven-3.3.9-bin.tar.gz
+#RUN sudo rm apache-maven-3.3.9-bin.tar.gz
+#WORKDIR $HOME/apache-maven-3.3.9-bin/
 
 
 
 #export PATH=/opt/apache-maven-3.3.9/bin:$PATH
-RUN export PATH=$HOME/apache-maven-3.3.9-bin:$PATH
+RUN export PATH=$HOME/apache-maven-3.3.9-bin/bin:$PATH
 
 #RUN ln -s apach
 
