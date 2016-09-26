@@ -123,25 +123,16 @@ RUN sudo make all && \
 WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
 
-#Probably these statements were causing mayhem.
+RUN echo $PATH
+WORKDIR /home/docker/git
+#RUN git clone https://github.com/NeuroML/jNeuroML
+RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
+WORKDIR jNeuroML
+RUN sudo /opt/conda/bin/python getNeuroML.py
 
-#RUN cp $HOME/git/nrnenv/nrnenv $HOME
-#RUN echo "export N=$HOME/neuron/nrn-7.4">>~/.bashrc
-#RUN echo "export CPU=x86_64">>~/.bashrc
-#RUN path_string="$IV/$CPU/bin:$N/$CPU/bin:$PATH"
-#RUN echo "export PATH=${path_string}">>~/.bashrc	
+ENV PATH=$HOME/neuron/nrn-7.4/x86_64/bin:$PATH
 
-
-#RUN eval echo "export PATH=\"$IV/$CPU/bin:$N/$CPU/bin:$PATH\"">>~/.bashrc
-
-
-#make sure the user can execute all the source code installed to their user space.
-#installing with sudo can sometimes make root the owner of files for reasons I don't understand
 
 RUN sudo chown -R docker $HOME
-#ENV PYTHONPATH /opt/conda/bin/python
-#ENV PYTHONHOME /opt/conda/bin/python
-
-
 
 
