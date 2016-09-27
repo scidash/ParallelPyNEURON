@@ -1,14 +1,13 @@
 #author russell jarvis rjjarvis@asu.edu
 
 #NEURON Dockerfile
-#Docker comments must be of this form.
-# This is the syntax for a directive. Don’t get confused
 #Set the base image to Ubuntu
 
 FROM ubuntu
 
+#TODO: join all calls to apt-get togethor such that calls to apt-get can all be done in one hit.
+
 #DO this part as root.
-#This is copied from the docker container for anaconda
 
 RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
@@ -38,28 +37,13 @@ WORKDIR /home/docker
 
 RUN chown -R docker:docker /home/docker
 
-#ENV PATH "/opt/conda/bin:$PATH"
-#RUN echo $PATH
-
-
 
 ENV HOME /home/docker 
 RUN echo $HOME
 
-#ENV PYTHONPATH /opt/conda/bin/
-#ENV PYTHONHOME /opt/conda/bin/
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 RUN echo $PATH
-#RUN echo $PYTHONPATH
-#RUN echo $PYTHONHOME
 
-
-#RUN export PYTHONHOME=/opt/conda/bin/python
-#RUN echo $PATH
-#RUN echo $PYTHONHOME
-#RUN echo $PYTHONPATH
-#RUN /opt/conda/bin/python -c "print('hello?')"
-#RUN python -c "print('hello')"
 RUN which conda
 RUN whereis condo
 RUN sudo /opt/conda/bin/conda install scipy numpy
