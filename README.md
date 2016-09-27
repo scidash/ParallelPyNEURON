@@ -4,19 +4,19 @@
 
 Purpose: The building of development environments raises an unnecessary technical problem. In many cases even if someone has the technical capacity to build, it does not mean they will have time too. In order to remove this barrier to participation I have attempted to create a docker image. The docker image builds open-mpi, NEURON-7.4 and miniconda python3 such that they all working togethor.
 
-Additionally the dockerimage plans to support JNeuroML and neuronunit.
+Additionally the dockerimage plans to contain sciunit and neuronunit.
 
 
 
 Remove unnecessary obstacles to participation
 
 
-TODO: add neuronunit/sciunit and JNeuroML
+TODO: add neuronunit/sciunit
 
 # 1
 Get docker 
 # 2
-After running gitclone navigate to the directory containing this file and run
+After running git clone navigate to the directory containing this file and run
 
 sudo docker build -t para-nrn-python .
 
@@ -27,3 +27,7 @@ docker images
 #4
 To launch the built ubuntu image try:
 docker run -it para-nrn-python:latest /bin/bash
+
+#5
+Alternitively don't build the dockerimage from source instead just download the precompiled image with
+docker pull russelljarvis/pyneuron-toolbox
