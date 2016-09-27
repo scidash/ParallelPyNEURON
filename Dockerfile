@@ -5,26 +5,32 @@
 
 FROM ubuntu
 
-#TODO: join all calls to apt-get togethor such that calls to apt-get can all be done in one hit.
 
-#DO this part as root.
+#Get a whole lot of GNU core development tools
+#version control java development, maven
+#Libraries required for building MPI from source
+#Libraries required for building NEURON from source
+
+#Also DO this part as root.
 
 RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
-    git 
-
+    git gcc g++ build-essential \ 
+    emacs vim ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 \
+    libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
+    emacs vim \
+    default-jre default-jdk maven xterm
+    
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh
     
-
-
 #Do the rest of the build  as user:
 #This will create a more familiar environment to continue developing in.
+#with less of a need to chown and chmod everything done as root at dockerbuild completion
 
 RUN useradd -ms /bin/bash docker
-
 USER root
 RUN apt-get update \
       && apt-get install -y sudo \
@@ -34,32 +40,14 @@ RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER docker
 WORKDIR /home/docker
-
 RUN chown -R docker:docker /home/docker
 
-
 ENV HOME /home/docker 
-RUN echo $HOME
-
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
-RUN echo $PATH
 
-RUN which conda
-RUN whereis condo
 RUN sudo /opt/conda/bin/conda install scipy numpy
 
-#Get a whole lot of GNU core development tools
-
-RUN sudo apt-get update && \
-  sudo apt-get install -y libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev 
-
-RUN sudo apt-get install -y wget bzip2 git gcc g++ build-essential default-jre default-jdk emacs vim ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 
-
-
-
-
 #Install General MPI, such that mpi4py can later bind with it.
-
 
 WORKDIR /home/docker
 
@@ -76,10 +64,7 @@ RUN \
   sudo make all && \
   sudo make install
 
-#Download  maven, and its java dependencies
 
-WORKDIR $HOME/git
-RUN sudo apt-get -y install default-jre default-jdk maven
 
 WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
