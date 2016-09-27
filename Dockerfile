@@ -1,22 +1,17 @@
 #author russell jarvis rjjarvis@asu.edu
-
 #NEURON Dockerfile
 #Set the base image to Ubuntu
-
 FROM ubuntu
-
-
 #Get a whole lot of GNU core development tools
 #version control java development, maven
 #Libraries required for building MPI from source
 #Libraries required for building NEURON from source
-
 #Also DO this part as root.
 
 RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git gcc g++ build-essential \ 
-    emacs vim ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 \
+    libglib2.0-0 libxext6 libsm6 libxrender1 \
     libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
     emacs vim \
     default-jre default-jdk maven xterm
@@ -37,14 +32,11 @@ RUN apt-get update \
       && rm -rf /var/lib/apt/lists/*
 RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-
 USER docker
 WORKDIR /home/docker
 RUN chown -R docker:docker /home/docker
-
 ENV HOME /home/docker 
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
-
 RUN sudo /opt/conda/bin/conda install scipy numpy
 
 #Install General MPI, such that mpi4py can later bind with it.
@@ -64,16 +56,13 @@ RUN \
   sudo make all && \
   sudo make install
 
-
-
+# Get python bindings for open mpi
 WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
 
 
 #Install NEURON-7.4 with python, with MPI. An infamous build process,
 #and much of the motivation for this docker container
-
-
 WORKDIR /home/docker/neuron
 # Fetch NEURON source files, extract them, delete .tar.gz file.
 RUN \
@@ -82,18 +71,18 @@ RUN \
   sudo rm nrn-7.4.tar.gz 
 
 WORKDIR /home/docker/neuron/nrn-7.4
-
-
 RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python --with-paranrn=/usr/bin/mpiexec
 RUN sudo make all && \
    sudo make install
 
-
+#Create python bindings for NEURON
 WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
 
+#Get JNeuroML
 RUN echo $PATH
 WORKDIR /home/docker/git
+#TODO change back to this repository, once pull request as accepted for python3 compliant code
 #RUN git clone https://github.com/NeuroML/jNeuroML
 RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML

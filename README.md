@@ -20,14 +20,14 @@ After running git clone navigate to the directory containing this file and run
 
 sudo docker build -t para-nrn-python .
 
-#3
+# 3
 To confirm build made an image:
 docker images
 
-#4
+# 4
 To launch the built ubuntu image try:
 docker run -it para-nrn-python:latest /bin/bash
 
-#5
-Alternitively don't build the dockerimage from source instead just download the precompiled image with
+# 5
+Alternatively don't build the dockerimage from source instead just download the precompiled image with
 docker pull russelljarvis/pyneuron-toolbox
