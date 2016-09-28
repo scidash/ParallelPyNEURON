@@ -97,6 +97,10 @@ RUN sudo git clone https://github.com/rgerkin/rickpy
 WORKDIR /home/docker/git/rickpy
 RUN sudo /opt/conda/bin/python setup.py install
 
+WORKDIR $HOME
+RUN sudo /opt/conda/bin/conda install -y tempita cython
+RUN /opt/conda/bin/python -c "import tempita"
+
 WORKDIR /home/docker/git
 RUN sudo git clone https://github.com/scidash/sciunit
 WORKDIR /home/docker/git/sciunit
