@@ -15,7 +15,10 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
     emacs vim \
     default-jre default-jdk maven xterm
-    
+
+#The following code is adapted from:
+#https://github.com/ContinuumIO/docker-images/blob/master/anaconda/Dockerfile    
+
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-3.7.0-Linux-x86_64.sh -O miniconda.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
@@ -111,6 +114,31 @@ RUN sudo git clone https://github.com/scidash/neuronunit
 WORKDIR /home/docker/git/neuronunit
 RUN sudo /opt/conda/bin/python setup.py install
 
+
+RUN sudo /opt/conda/bin/conda install -y jupyter
+
+ENV DEBIAN_FRONTEND noninteractive
+#ADD requirements.txt .
+
+#The following code is adapted from:
+#https://github.com/dmaticzka/docker-edenbase
+#https://github.com/rgerkin/docker-edenbase
+
+
+## from jupyter documentation
+# Add Tini. Tini operates as a process subreaper for jupyter. This prevents
+# kernel crashes.
+ENV TINI_VERSION v0.6.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN sudo chmod +x /usr/bin/tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
 RUN sudo chown -R docker $HOME
+WORKDIR /home/docker/
+
+RUN sudo mkdir /export
+EXPOSE 8888
+CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--notebook-dir=/export/"]
+RUN alias jup='jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/export/'
 
 
