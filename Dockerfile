@@ -78,6 +78,8 @@ RUN sudo make all && \
 #Create python bindings for NEURON
 WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
+ENV PATH=$HOME/neuron/nrn-7.4/x86_64/bin:$PATH
+
 
 #Get JNeuroML
 RUN echo $PATH
@@ -88,8 +90,22 @@ RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
 RUN sudo /opt/conda/bin/python getNeuroML.py
 
-ENV PATH=$HOME/neuron/nrn-7.4/x86_64/bin:$PATH
+#Begin installation of neuronunit.
 
+WORKDIR /home/docker/git
+RUN sudo git clone https://github.com/rgerkin/rickpy
+WORKDIR /home/docker/git/rickpy
+RUN sudo /opt/conda/bin/python setup.py install
+
+WORKDIR /home/docker/git
+RUN sudo git clone https://github.com/scidash/sciunit
+WORKDIR /home/docker/git/sciunit
+RUN sudo /opt/conda/bin/python setup.py install
+
+WORKDIR /home/docker/git
+RUN sudo git clone https://github.com/scidash/neuronunit
+WORKDIR /home/docker/git/neuronunit
+RUN sudo /opt/conda/bin/python setup.py install
 
 RUN sudo chown -R docker $HOME
 
