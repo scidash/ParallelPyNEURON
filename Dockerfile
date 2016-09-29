@@ -81,7 +81,7 @@ RUN sudo make all && \
 #Create python bindings for NEURON
 WORKDIR src/nrnpython
 RUN sudo /opt/conda/bin/python setup.py install
-ENV PATH=$HOME/neuron/nrn-7.4/x86_64/bin:$PATH
+ENV PATH $HOME/neuron/nrn-7.4/x86_64/bin:$PATH
 
 
 #Get JNeuroML
@@ -169,3 +169,13 @@ RUN sudo /opt/conda/bin/python setup.py install
 
 RUN sudo chown -R docker $HOME
 WORKDIR /home/docker/
+
+#Some superficial tests to check for breaks.
+RUN nrniv
+RUN mpiexec -np 3 python -c "import mpi4py"
+RUN python -c "import neuron; import sciunit; import neuronunit"
+#RUN python -c "import neuroml"
+RUN nrnivmodl 
+RUN echo "that last stderr may have looked bad, but it was probably an indication that nrnivmodl can work if given mod files"
+
+
