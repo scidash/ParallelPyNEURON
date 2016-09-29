@@ -88,8 +88,8 @@ ENV PATH $HOME/neuron/nrn-7.4/x86_64/bin:$PATH
 RUN echo $PATH
 WORKDIR /home/docker/git
 #TODO change back to this repository, once pull request as accepted for python3 compliant code
-RUN sudo git clone https://github.com/NeuroML/jNeuroML
-#RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
+#RUN sudo git clone https://github.com/NeuroML/jNeuroML
+RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
 RUN sudo /opt/conda/bin/python getNeuroML.py
 
@@ -133,7 +133,7 @@ RUN sudo /opt/conda/bin/python setup.py install
 #The following code is adapted from:
 #https://github.com/dmaticzka/docker-edenbase
 #https://github.com/rgerkin/docker-edenbase
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 
 
 ##from jupyter documentation
@@ -149,10 +149,34 @@ ENV DEBIAN_FRONTEND noninteractive
 #EXPOSE 8888
 #CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--notebook-dir=/export/"]
 #RUN alias jup='jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/export/'
+#RUN sudo /opt/conda/bin/conda install -y pip 
+RUN sudo apt-get update && sudo apt-get install -y python3-setuptools
+RUN sudo easy_install3 pip
 
+RUN sudo apt-get install -y pandoc
+	
+#RUN sudo pip install pypandoc -d /opt/conda/dist
+#RUN sudo pip install deap scoop -d /opt/conda/dist
+ENV HOME /home/docker 
+ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
+
+ENV PATH $HOME/neuron/nrn-7.4/x86_64/bin:$PATH
 
 RUN sudo chown -R docker $HOME
-WORKDIR /home/docker/
+
+WORKDIR /home/docker/git
+RUN git clone https://github.com/soravux/scoop.git
+#RUN git clone https://github.com/soravux/scoop.git
+WORKDIR /home/docker/git/scoop
+RUN sudo /opt/conda/bin/python setup.py install
+
+WORKDIR /home/docker/git
+#RUN git clone https://github.com/DEAP.git
+RUN git clone https://github.com/DEAP/deap.git
+WORKDIR /home/docker/git/deap
+RUN sudo /opt/conda/bin/python setup.py install
+
+
 
 #Some superficial tests to check for breaks.
 RUN nrniv
@@ -161,5 +185,6 @@ RUN python -c "import neuron; import sciunit; import neuronunit"
 #RUN python -c "import neuroml"
 RUN nrnivmodl 
 RUN echo "that last stderr may have looked bad, but it was probably an indication that nrnivmodl can work if given mod files"
+RUN python -c "import scoop; import deap"
 
 
