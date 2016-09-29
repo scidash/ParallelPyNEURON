@@ -104,14 +104,17 @@ WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y tempita cython
 
 RUN /opt/conda/bin/python -c "import tempita"
+RUN sudo /opt/conda/bin/conda install libxml2 libxslt lxml
+RUN sudo apt-get install -y gcc
 
 WORKDIR /home/docker/git
-RUN sudo git clone https://github.com/scidash/sciunit —-branch dev
+RUN sudo git clone https://github.com/scidash/sciunit -b dev
+#sciunit
 WORKDIR /home/docker/git/sciunit
 RUN sudo /opt/conda/bin/python setup.py install
 
 WORKDIR /home/docker/git
-RUN sudo git clone https://github.com/scidash/neuronunit —-branch dev
+RUN sudo git clone https://github.com/scidash/neuronunit —b dev
 WORKDIR /home/docker/git/neuronunit
 RUN sudo /opt/conda/bin/python setup.py install
 
@@ -132,17 +135,17 @@ ENV DEBIAN_FRONTEND noninteractive
 ##from jupyter documentation
 #Add Tini. Tini operates as a process subreaper for jupyter. This prevents
 #kernel crashes.
-ENV TINI_VERSION v0.6.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN sudo chmod +x /usr/bin/tini
-ENTRYPOINT ["/usr/bin/tini", "--"]
+#ENV TINI_VERSION v0.6.0
+#ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+#RUN sudo chmod +x /usr/bin/tini
+#ENTRYPOINT ["/usr/bin/tini", "--"]
 
 RUN sudo chown -R docker $HOME
 WORKDIR /home/docker/
 
-RUN sudo mkdir /export
-EXPOSE 8888
-CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--notebook-dir=/export/"]
-RUN alias jup='jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/export/'
+#RUN sudo mkdir /export
+#EXPOSE 8888
+#CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--notebook-dir=/export/"]
+#RUN alias jup='jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/export/'
 
 
