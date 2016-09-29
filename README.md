@@ -21,6 +21,8 @@ After running git clone navigate to the directory containing this file and run
 
 sudo docker build -t para-nrn-python .
 
+This tells docker to build an image based on the contents of the file labelled Dockerfile located in the present working directory. The image that is output from this process is not actually output to this directory. The image is accessible in any directory visible to the shell in an instance of the docker daemon.
+
 # 3
 To confirm build made an image:
 docker images
