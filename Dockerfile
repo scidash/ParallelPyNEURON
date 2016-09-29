@@ -104,12 +104,23 @@ WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y tempita cython
 
 RUN /opt/conda/bin/python -c "import tempita"
-RUN sudo /opt/conda/bin/conda install libxml2 libxslt lxml
+RUN sudo /opt/conda/bin/conda install -y libxml2 libxslt lxml
 RUN sudo apt-get install -y gcc
 
-WORKDIR /home/docker/git
-RUN sudo git clone https://github.com/takluyver/entrypoints.git
-WORKDIR /home/docker/git/takluyver
+#WORKDIR /home/docker/git
+#RUN sudo git clone https://github.com/takluyver/entrypoints.git
+#WORKDIR /home/docker/git/takluyver
+
+#The following code is adapted from:
+#https://github.com/dmaticzka/docker-edenbase
+#https://github.com/rgerkin/docker-edenbase
+
+RUN sudo /opt/conda/bin/conda install -y jupyter
+
+ENV DEBIAN_FRONTEND noninteractive
+
+#  
+#entrypoints:        0.2.2-py34_0 
 
 #The non development versions of sciunit, neuronunit build
 #The dev branchs fail
@@ -118,30 +129,24 @@ WORKDIR /home/docker/git/takluyver
 #CMD ls *
 #RUN python -c "import sys; print(sys.path)"
 #RUN sudo ln -s entrypoints/entrypoints.py /opt/conda/lib/python3.4/site-packages
-#RUN python -c "import entrypoints"
+RUN python -c "import entrypoints"
 #RUN sudo /opt/conda/bin/python setup.py install
 
 
-#WORKDIR /home/docker/git
-#RUN sudo git clone https://github.com/scidash/sciunit -b dev
+WORKDIR /home/docker/git
+RUN sudo git clone https://github.com/scidash/sciunit -b dev
 #sciunit
-#WORKDIR /home/docker/git/sciunit
-#RUN sudo /opt/conda/bin/python setup.py install
+WORKDIR /home/docker/git/sciunit
+RUN sudo /opt/conda/bin/python setup.py install
 
-#WORKDIR /home/docker/git
-#RUN sudo git clone https://github.com/scidash/neuronunit —b dev
-#WORKDIR /home/docker/git/neuronunit
-#RUN sudo /opt/conda/bin/python setup.py install
+WORKDIR /home/docker/git
+RUN sudo git clone https://github.com/scidash/neuronunit -b dev
+WORKDIR /home/docker/git/neuronunit
+RUN sudo /opt/conda/bin/python setup.py install
 
 
-RUN sudo /opt/conda/bin/conda install -y jupyter
-
-ENV DEBIAN_FRONTEND noninteractive
 #ADD requirements.txt .
 
-#The following code is adapted from:
-#https://github.com/dmaticzka/docker-edenbase
-#https://github.com/rgerkin/docker-edenbase
 
 
 #The purpose is to create a notebook web server without having a web browser o ra #graphical front end
@@ -155,8 +160,6 @@ ENV DEBIAN_FRONTEND noninteractive
 #RUN sudo chmod +x /usr/bin/tini
 #ENTRYPOINT ["/usr/bin/tini", "--"]
 
-RUN sudo chown -R docker $HOME
-WORKDIR /home/docker/
 
 #RUN sudo mkdir /export
 #EXPOSE 8888
@@ -164,3 +167,5 @@ WORKDIR /home/docker/
 #RUN alias jup='jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/export/'
 
 
+RUN sudo chown -R docker $HOME
+WORKDIR /home/docker/
