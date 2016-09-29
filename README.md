@@ -9,8 +9,17 @@ neuronunit/sciunit dev branches have also been added
 # 1
 Get docker 
 
-# 2
-After running git clone navigate to the directory containing this file and run
+# 2 The easy way inline with philosophy stated above don't build the docker image from source instead just download the pre-compiled image with
+docker pull russelljarvis/pyneuron-toolbox 
+
+Run step 3 to confirm the presence of the image, and step 4 to enter the docker container.
+
+It may even be possible to to use the container non interactively, by passing commands to it with -c
+
+
+
+# 2 The long way:
+Assuming you have git, after running git clone navigate to the directory containing this file and run
 
 sudo docker build -t para-nrn-python .
 
@@ -21,14 +30,6 @@ To confirm build made an image:
 docker images
 
 # 4
-To launch the built ubuntu image try:
+To enter the built ubuntu image try:
 docker run -it para-nrn-python:latest /bin/bash
-
-# 5
-Alternatively don't build the docker image from source instead just download the pre-compiled image with
-docker pull russelljarvis/pyneuron-toolbox 
-
-Run step 3 to confirm the presence of the image, and step 4 to enter the docker container.
-
-It may even be possible to to use the container non interactively, by passing commands to it with -c
 

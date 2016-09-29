@@ -88,8 +88,8 @@ ENV PATH $HOME/neuron/nrn-7.4/x86_64/bin:$PATH
 RUN echo $PATH
 WORKDIR /home/docker/git
 #TODO change back to this repository, once pull request as accepted for python3 compliant code
-#RUN git clone https://github.com/NeuroML/jNeuroML
-RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
+RUN sudo git clone https://github.com/NeuroML/jNeuroML
+#RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
 RUN sudo /opt/conda/bin/python getNeuroML.py
 
@@ -103,41 +103,19 @@ RUN sudo /opt/conda/bin/python setup.py install
 WORKDIR $HOME
 RUN sudo /opt/conda/bin/conda install -y tempita cython
 
-RUN /opt/conda/bin/python -c "import tempita"
 RUN sudo /opt/conda/bin/conda install -y libxml2 libxslt lxml
 RUN sudo apt-get install -y gcc
 
-#WORKDIR /home/docker/git
-#RUN sudo git clone https://github.com/takluyver/entrypoints.git
-#WORKDIR /home/docker/git/takluyver
-
-#The following code is adapted from:
-#https://github.com/dmaticzka/docker-edenbase
-#https://github.com/rgerkin/docker-edenbase
-
 RUN sudo /opt/conda/bin/conda install -y jupyter
 
-ENV DEBIAN_FRONTEND noninteractive
-
-#  
-#entrypoints:        0.2.2-py34_0 
-
-#The non development versions of sciunit, neuronunit build
-#The dev branchs fail
-#Test by uncommenting the below:
-
-#CMD ls *
-#RUN python -c "import sys; print(sys.path)"
-#RUN sudo ln -s entrypoints/entrypoints.py /opt/conda/lib/python3.4/site-packages
-RUN python -c "import entrypoints"
-#RUN sudo /opt/conda/bin/python setup.py install
-
+#sciunit
 
 WORKDIR /home/docker/git
 RUN sudo git clone https://github.com/scidash/sciunit -b dev
-#sciunit
 WORKDIR /home/docker/git/sciunit
 RUN sudo /opt/conda/bin/python setup.py install
+
+#neuronunit
 
 WORKDIR /home/docker/git
 RUN sudo git clone https://github.com/scidash/neuronunit -b dev
@@ -150,6 +128,12 @@ RUN sudo /opt/conda/bin/python setup.py install
 
 
 #The purpose is to create a notebook web server without having a web browser o ra #graphical front end
+
+
+#The following code is adapted from:
+#https://github.com/dmaticzka/docker-edenbase
+#https://github.com/rgerkin/docker-edenbase
+ENV DEBIAN_FRONTEND noninteractive
 
 
 ##from jupyter documentation
@@ -172,7 +156,7 @@ WORKDIR /home/docker/
 
 #Some superficial tests to check for breaks.
 RUN nrniv
-RUN mpiexec -np 3 python -c "import mpi4py"
+RUN mpiexec -np 4 python -c "import mpi4py"
 RUN python -c "import neuron; import sciunit; import neuronunit"
 #RUN python -c "import neuroml"
 RUN nrnivmodl 
