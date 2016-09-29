@@ -108,15 +108,30 @@ RUN sudo /opt/conda/bin/conda install libxml2 libxslt lxml
 RUN sudo apt-get install -y gcc
 
 WORKDIR /home/docker/git
-RUN sudo git clone https://github.com/scidash/sciunit -b dev
-#sciunit
-WORKDIR /home/docker/git/sciunit
-RUN sudo /opt/conda/bin/python setup.py install
+RUN sudo git clone https://github.com/takluyver/entrypoints.git
+WORKDIR /home/docker/git/takluyver
 
-WORKDIR /home/docker/git
-RUN sudo git clone https://github.com/scidash/neuronunit —b dev
-WORKDIR /home/docker/git/neuronunit
-RUN sudo /opt/conda/bin/python setup.py install
+#The non development versions of sciunit, neuronunit build
+#The dev branchs fail
+#Test by uncommenting the below:
+
+#CMD ls *
+#RUN python -c "import sys; print(sys.path)"
+#RUN sudo ln -s entrypoints/entrypoints.py /opt/conda/lib/python3.4/site-packages
+#RUN python -c "import entrypoints"
+#RUN sudo /opt/conda/bin/python setup.py install
+
+
+#WORKDIR /home/docker/git
+#RUN sudo git clone https://github.com/scidash/sciunit -b dev
+#sciunit
+#WORKDIR /home/docker/git/sciunit
+#RUN sudo /opt/conda/bin/python setup.py install
+
+#WORKDIR /home/docker/git
+#RUN sudo git clone https://github.com/scidash/neuronunit —b dev
+#WORKDIR /home/docker/git/neuronunit
+#RUN sudo /opt/conda/bin/python setup.py install
 
 
 RUN sudo /opt/conda/bin/conda install -y jupyter
