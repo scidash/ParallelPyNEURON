@@ -123,40 +123,16 @@ WORKDIR /home/docker/git/neuronunit
 RUN sudo /opt/conda/bin/python setup.py install
 
 
-#ADD requirements.txt .
-
-
-
-#The purpose is to create a notebook web server without having a web browser o ra #graphical front end
-
-
+#TODO create a notebook web server without having a web browser o ra #graphical front end
 #The following code is adapted from:
 #https://github.com/dmaticzka/docker-edenbase
 #https://github.com/rgerkin/docker-edenbase
-#ENV DEBIAN_FRONTEND noninteractive
 
-
-##from jupyter documentation
-#Add Tini. Tini operates as a process subreaper for jupyter. This prevents
-#kernel crashes.
-#ENV TINI_VERSION v0.6.0
-#ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-#RUN sudo chmod +x /usr/bin/tini
-#ENTRYPOINT ["/usr/bin/tini", "--"]
-
-
-#RUN sudo mkdir /export
-#EXPOSE 8888
-#CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--notebook-dir=/export/"]
-#RUN alias jup='jupyter notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/export/'
-#RUN sudo /opt/conda/bin/conda install -y pip 
 RUN sudo apt-get update && sudo apt-get install -y python3-setuptools
 RUN sudo easy_install3 pip
 
 RUN sudo apt-get install -y pandoc
 	
-#RUN sudo pip install pypandoc -d /opt/conda/dist
-#RUN sudo pip install deap scoop -d /opt/conda/dist
 ENV HOME /home/docker 
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 
@@ -166,12 +142,10 @@ RUN sudo chown -R docker $HOME
 
 WORKDIR /home/docker/git
 RUN git clone https://github.com/soravux/scoop.git
-#RUN git clone https://github.com/soravux/scoop.git
 WORKDIR /home/docker/git/scoop
 RUN sudo /opt/conda/bin/python setup.py install
 
 WORKDIR /home/docker/git
-#RUN git clone https://github.com/DEAP.git
 RUN git clone https://github.com/DEAP/deap.git
 WORKDIR /home/docker/git/deap
 RUN sudo /opt/conda/bin/python setup.py install
@@ -182,7 +156,6 @@ RUN sudo /opt/conda/bin/python setup.py install
 RUN nrniv
 RUN mpiexec -np 4 python -c "import mpi4py"
 RUN python -c "import neuron; import sciunit; import neuronunit"
-#RUN python -c "import neuroml"
 RUN nrnivmodl 
 RUN echo "that last stderr may have looked bad, but it was probably an indication that nrnivmodl can work if given mod files"
 RUN python -c "import scoop; import deap"

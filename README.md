@@ -9,7 +9,8 @@ neuronunit/sciunit dev branches have also been added
 # 1
 Get docker 
 
-# 2 The easy way inline with philosophy stated above don't build the docker image from source instead just download the pre-compiled image with
+# 2 
+In accordance with the philosophy stated above don't build the docker image from source instead just download the pre-compiled image with
 docker pull russelljarvis/pyneuron-toolbox 
 
 Run step 3 to confirm the presence of the image, and step 4 to enter the docker container.
@@ -30,6 +31,17 @@ To confirm build made an image:
 docker images
 
 # 4
-To enter the built ubuntu image try:
+To enter the built ubuntu image try interactively inorder to do neurounit development inside the image use:
+
 docker run -it para-nrn-python:latest /bin/bash
 
+# 5
+To throw commands at the docker image without actually entering it use syntactic pattern like:
+
+docker run para-nrn-python:latest python -c "import neuron; import neuronunit; import sciunit"
+
+docker run para-nrn-python:latest nproc
+
+
+#The docker image is able to use the same number of CPUs available on the host system see below:
+#http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system
