@@ -41,3 +41,7 @@ $docker run para-nrn-python:latest nproc
 
 ##The docker image is able to use the same number of CPUs available on the host system see below:
 ##http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system
+
+#To mount a directory containing development files inside the docker container using OSX as the base system use:
+#docker run -v /Users/<path>:/<container path> ...
+#Reference: https://docs.docker.com/engine/tutorials/dockervolumes/

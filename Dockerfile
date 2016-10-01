@@ -150,6 +150,9 @@ RUN git clone https://github.com/DEAP/deap.git
 WORKDIR /home/docker/git/deap
 RUN sudo /opt/conda/bin/python setup.py install
 
+#The volume command declares a volume of persistant memory for the docker container.
+#This will be useful for ongoing development.
+#VOLUME
 
 
 #Some superficial tests to check for breaks.
