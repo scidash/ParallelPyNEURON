@@ -122,15 +122,15 @@ WORKDIR /home/docker/git/neuronunit
 RUN sudo /opt/conda/bin/python setup.py install
 
 
-#TODO create a notebook web server without having a web browser o ra #graphical front end
-#The following code is adapted from:
+#TODO create a notebook web server without having a web browser or a graphical front end
+#In the future code to do this will be based on:
 #https://github.com/dmaticzka/docker-edenbase
 #https://github.com/rgerkin/docker-edenbase
 
+#Unsure if getting pip is still necessary.
 RUN sudo apt-get update && sudo apt-get install -y python3-setuptools
-RUN sudo easy_install3 pip
-
 RUN sudo apt-get install -y pandoc
+RUN sudo easy_install3 pip
 	
 ENV HOME /home/docker 
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
@@ -153,10 +153,12 @@ RUN sudo /opt/conda/bin/python setup.py install
 #This will be useful for ongoing development.
 #VOLUME
 
-WORKDIR /home/docker/git
-RUN git https://github.com/OpenSourceBrain/Thalamocortical.git
-WORKDIR /home/docker/git/Thalamocortical/NeuroML2/pythonScripts/netbuild/
-RUN jNeuroML -neuron -netPyNN TestSmall.net.nml
+# TODO uncomment and test:
+
+#WORKDIR /home/docker/git
+#RUN git https://github.com/OpenSourceBrain/Thalamocortical.git
+#WORKDIR /home/docker/git/Thalamocortical/NeuroML2/pythonScripts/netbuild/
+#RUN jNeuroML -neuron -netPyNN TestSmall.net.nml
 
 #Some superficial tests to check for breaks.
 RUN nrniv
