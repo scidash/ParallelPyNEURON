@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git gcc g++ build-essential \ 
     libglib2.0-0 libxext6 libsm6 libxrender1 \
-    libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
-    default-jre default-jdk maven emacs
+    libncurses-dev \
+    default-jre default-jdk maven
     
 #The following code is adapted from:
 #https://github.com/ContinuumIO/docker-images/blob/master/anaconda/Dockerfile    
@@ -44,25 +44,10 @@ RUN sudo /opt/conda/bin/conda install scipy numpy matplotlib
 #Test matplotlib
 RUN /opt/conda/bin/python -c "import matplotlib"
 #Install General MPI, such that mpi4py can later bind with it.
+RUN sudo /opt/conda/bin/conda install -y jupyter ipython
 
 WORKDIR /home/docker
 
-RUN \
-   sudo wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-2.0.0.tar.gz && \
-   sudo tar -xzf openmpi-2.0.0.tar.gz && \
-   sudo rm openmpi-2.0.0.tar.gz
-
-WORKDIR /home/docker/openmpi-2.0.0
-
-# Compile openmpi
-RUN \
-  sudo ./configure && \
-  sudo make all && \
-  sudo make install
-
-# Get python bindings for open mpi
-WORKDIR $HOME
-RUN sudo /opt/conda/bin/conda install -y mpi4py ipython
 
 
 #Install NEURON-7.4 with python, with MPI. An infamous build process,
@@ -75,7 +60,7 @@ RUN \
   sudo rm nrn-7.4.tar.gz 
 
 WORKDIR /home/docker/neuron/nrn-7.4
-RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python --with-paranrn=/usr/bin/mpiexec
+RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python
 RUN sudo make all && \
    sudo make install
 
@@ -107,7 +92,6 @@ RUN sudo /opt/conda/bin/conda install -y tempita cython
 RUN sudo /opt/conda/bin/conda install -y libxml2 libxslt lxml
 RUN sudo apt-get install -y gcc
 
-RUN sudo /opt/conda/bin/conda install -y jupyter
 
 #sciunit
 
@@ -141,16 +125,6 @@ ENV PATH $HOME/neuron/nrn-7.4/x86_64/bin:$PATH
 
 RUN sudo chown -R docker $HOME
 
-WORKDIR /home/docker/git
-RUN git clone https://github.com/soravux/scoop.git
-WORKDIR /home/docker/git/scoop
-RUN sudo /opt/conda/bin/python setup.py install
-
-WORKDIR /home/docker/git
-RUN git clone https://github.com/DEAP/deap.git
-WORKDIR /home/docker/git/deap
-RUN sudo /opt/conda/bin/python setup.py install
-
 #The volume command declares a volume of persistant memory for the docker container.
 #This will be useful for ongoing development.
 #VOLUME
@@ -168,7 +142,6 @@ RUN mpiexec -np 4 python -c "import mpi4py"
 RUN python -c "import neuron; import sciunit; import neuronunit"
 RUN nrnivmodl 
 RUN echo "that last stderr may have looked bad, but it was probably an indication that nrnivmodl can work if given mod files"
-RUN python -c "import scoop; import deap"
 
 
-RUN sudo /opt/conda/bin/conda install matplotlib
+#RUN sudo /opt/conda/bin/conda install matplotlib
