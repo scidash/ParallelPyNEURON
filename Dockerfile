@@ -39,8 +39,10 @@ WORKDIR /home/docker
 RUN chown -R docker:docker /home/docker
 ENV HOME /home/docker 
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
-RUN sudo /opt/conda/bin/conda install scipy numpy
+RUN sudo /opt/conda/bin/conda install scipy numpy matplotlib
 
+#Test matplotlib
+RUN /opt/conda/bin/python -c "import matplotlib"
 #Install General MPI, such that mpi4py can later bind with it.
 
 WORKDIR /home/docker
@@ -169,3 +171,4 @@ RUN echo "that last stderr may have looked bad, but it was probably an indicatio
 RUN python -c "import scoop; import deap"
 
 
+RUN sudo /opt/conda/bin/conda install matplotlib
