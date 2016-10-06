@@ -13,9 +13,8 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     git gcc g++ build-essential \ 
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
-    emacs vim \
-    default-jre default-jdk maven xterm
-
+    default-jre default-jdk maven emacs
+    
 #The following code is adapted from:
 #https://github.com/ContinuumIO/docker-images/blob/master/anaconda/Dockerfile    
 
@@ -154,6 +153,10 @@ RUN sudo /opt/conda/bin/python setup.py install
 #This will be useful for ongoing development.
 #VOLUME
 
+WORKDIR /home/docker/git
+RUN git https://github.com/OpenSourceBrain/Thalamocortical.git
+WORKDIR /home/docker/git/Thalamocortical/NeuroML2/pythonScripts/netbuild/
+RUN jNeuroML -neuron -netPyNN TestSmall.net.nml
 
 #Some superficial tests to check for breaks.
 RUN nrniv
