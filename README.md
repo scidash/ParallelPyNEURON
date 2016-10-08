@@ -2,10 +2,10 @@
 
 Purpose: The building of development environments raises an unnecessary technical problem. In many cases even if someone has the technical capacity to build, it does not mean they will have time too. In order to remove this barrier to participation we have attempted to create some useful docker images. 
 
-# 1
+## 1
 Get docker 
 
-# 2 
+## 2 
 In accordance with the philosophy stated above don't build the docker image from source instead just download the pre-compiled image with
 `docker pull scidash/<image-name>`
 
@@ -13,24 +13,24 @@ where `<image-name>` is one of the sub-directories above (e.g. `neuron-mpi-neuro
 
 Run step 3 to confirm the presence of the image, and step 4 to enter the docker container.
 
-# 2 The long way:
+## 2 (The long way):
 Assuming you have git, after running git clone navigate to the directory containing this file and run
 
 `sudo docker build -t <image-name> <image-name>`
 
 This tells docker to build an image based on the contents of the file labelled Dockerfile located in the present working directory. The image that is output from this process is not actually output to this directory. The image is accessible in any directory visible to the shell in an instance of the docker daemon.
 
-# 3
+## 3
 To confirm build made an image:
 
 `docker images`
 
-# 4
+## 4
 To enter the built image try interactively inorder to do neurounit development inside the image use:
 
 `docker run -it <image-name> bash`
 
-# 5
+## 5
 To throw commands at the docker image without actually entering it use syntactic pattern like:
 
 `docker run neuronunit-scoop-deap python -c "import neuron; import neuronunit; import sciunit"`
@@ -42,7 +42,7 @@ To throw commands at the docker image without actually entering it use syntactic
 
 ### To mount a directory containing development files inside the docker container using OSX as the base system use:
 `docker run -v /Users/<path>:/<container path> ...`
-#### Reference: https://docs.docker.com/engine/tutorials/dockervolumes/
+##### Reference: https://docs.docker.com/engine/tutorials/dockervolumes/
 
 ### To interact with your Jupyter noteboks through these images, do:
 `docker run -d -p 8888:8888 -v /path/to/my/notebooks:/Users/jovyan/work/notebooks`
@@ -51,9 +51,9 @@ To throw commands at the docker image without actually entering it use syntactic
 # 6
 The hierarchy of docker images here is:  
 #### neuronunit-scoop-deap
-##### depends on
+###### depends on
 #### neuron-mpi-neuroml
-##### depends on
+###### depends on
 #### scipy-notebook-plus
-##### depends on
+###### depends on
 #### jupyter/scipy-notebook (http://github.com/jupyter/docker-stacks)
