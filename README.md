@@ -37,23 +37,23 @@ To throw commands at the docker image without actually entering it use syntactic
 
 `docker run neuronunit-scoop-deap nproc`
 
-##The docker image is able to use the same number of CPUs available on the host system see below:
-##http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system
+### The docker image is able to use the same number of CPUs available on the host system see below:
+#### http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system
 
-#To mount a directory containing development files inside the docker container using OSX as the base system use:
+### To mount a directory containing development files inside the docker container using OSX as the base system use:
 `docker run -v /Users/<path>:/<container path> ...`
-#Reference: https://docs.docker.com/engine/tutorials/dockervolumes/
+#### Reference: https://docs.docker.com/engine/tutorials/dockervolumes/
 
-# To interact with your Jupyter noteboks through these images, do:
+### To interact with your Jupyter noteboks through these images, do:
 `docker run -d -p 8888:8888 -v /path/to/my/notebooks:/Users/jovyan/work/notebooks`
-# and then go to localhost:8888 in your web browser.
+### and then go to localhost:8888 in your web browser.
 
 # 6
 The hierarchy of docker images here is:  
-### neuronunit-scoop-deap
-#### depends on
-### neuron-mpi-neuroml
-#### depends on
-### scipy-notebook-plus
-#### depends on
-### jupyter/scipy-notebook (http://github.com/jupyter/docker-stacks)
+#### neuronunit-scoop-deap
+##### depends on
+#### neuron-mpi-neuroml
+##### depends on
+#### scipy-notebook-plus
+##### depends on
+#### jupyter/scipy-notebook (http://github.com/jupyter/docker-stacks)
