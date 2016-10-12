@@ -48,6 +48,9 @@ To throw commands at the docker image without actually entering it use syntactic
 `docker run -d -p 8888:8888 -v /path/to/my/notebooks:/Users/jovyan/work/notebooks`
 ### and then go to localhost:8888 in your web browser.
 
+### To mount a host file system, and then to develop interactively inside the image:
+`docker run -v path/to/python/code:/home/mnt -it neuronunit-scoop-deap`
+
 # 6
 The hierarchy of docker images here is:  
 #### neuronunit-scoop-deap
