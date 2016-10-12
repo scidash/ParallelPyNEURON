@@ -16,7 +16,7 @@ Run step 3 to confirm the presence of the image, and step 4 to enter the docker 
 ## 2 (The long way):
 Assuming you have git, after running git clone navigate to the directory containing this file and run
 
-`sudo docker build -t <image-name> <image-name>`
+`sudo docker build -t <image-name> .
 
 This tells docker to build an image based on the contents of the file labelled Dockerfile located in the present working directory. The image that is output from this process is not actually output to this directory. The image is accessible in any directory visible to the shell in an instance of the docker daemon.
 
