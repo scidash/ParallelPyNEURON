@@ -1,6 +1,6 @@
 #author russell jarvis rjjarvis@asu.edu
 
-FROM scipy-notebook-plus
+FROM scidash/scipy-notebook-plus
 USER root
 
 WORKDIR $HOME

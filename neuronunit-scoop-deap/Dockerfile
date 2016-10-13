@@ -1,4 +1,4 @@
-FROM neuron_mpi_neuroml
+FROM scidash/neuron-mpi-neuroml
 
 USER root
 
