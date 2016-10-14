@@ -52,7 +52,7 @@ To throw commands at the docker image without actually entering it use syntactic
 
 ```docker run -it -p 8888:8888 -v `pwd`:/home/jovyan/work/scipyopt <image_name> bash```
 
-Note: jovyan is just an arbitary name for the user space on the docker filesystem. There is nothing special about the name jovyan.
+Note: Jovyan is a reference to the Greek God Jupyter, however its also an arbitary choice of name for the user space on the docker filesystem. 
 
 # 6
 The hierarchy of docker images here is:  
