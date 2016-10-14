@@ -50,7 +50,7 @@ To throw commands at the docker image without actually entering it use syntactic
 
 ### To mount a host file system, and then to develop interactively inside the image:
 
-`docker run -it -p 8888:8888 -v `pwd`:/home/jovyan/work/scipyopt <image_name> bash`
+```docker run -it -p 8888:8888 -v `pwd`:/home/jovyan/work/scipyopt <image_name> bash```
 
 Note: jovyan is just an arbitary name for the user space on the docker filesystem. There is nothing special about the name jovyan.
 
