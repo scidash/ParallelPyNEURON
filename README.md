@@ -49,7 +49,10 @@ To throw commands at the docker image without actually entering it use syntactic
 ### and then go to localhost:8888 in your web browser.
 
 ### To mount a host file system, and then to develop interactively inside the image:
-`docker run -v path/to/python/code:/home/mnt -it neuronunit-scoop-deap`
+
+`docker run -it -p 8888:8888 -v `pwd`:/home/jovyan/work/scipyopt <image_name> bash`
+
+Note: jovyan is just an arbitary name for the user space on the docker filesystem. There is nothing special about the name jovyan.
 
 # 6
 The hierarchy of docker images here is:  
