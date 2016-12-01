@@ -8,6 +8,7 @@ RUN pip install git+https://github.com/soravux/scoop
 RUN pip install git+https://github.com/DEAP/deap
 	
 USER $NB_USER
+RUN cd $HOME/work
 
 RUN nrniv
 RUN python -c "import neuron; import sciunit; import neuronunit"
