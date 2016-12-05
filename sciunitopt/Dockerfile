@@ -3,7 +3,6 @@
 
 FROM scidash/neuron-mpi-neuroml
 
-RUN pip install --upgrade pip
 RUN pip install neo
 RUN pip install elephant
 RUN pip install bs4
