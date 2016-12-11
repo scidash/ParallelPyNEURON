@@ -9,13 +9,13 @@ USER root
 #Libraries required for building MPI from source
 #Libraries required for building NEURON from source
 
-RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
+RUN apt-get update
+RUN apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git gcc g++ build-essential \ 
-    libglib2.0-0 libxext6 libsm6 libxrender1 \
     libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
-    default-jre default-jdk maven emacs
-RUN apt-get install -y sudo
+    default-jre default-jdk maven emacs \
+    libxml2-dev libxslt-dev python-dev sudo
     
 # Make sure every Python file belongs to jovyan
 RUN find /opt/conda ! -user jovyan -print0 | xargs -0 -I {} chown jovyan {}
