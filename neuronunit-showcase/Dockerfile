@@ -1,7 +1,7 @@
 #author Russell Jarvis rjjarvis@asu.edu
 #author Rick Gerkin rgerkin@asu.edu
 
-FROM scidash/sciunitopt
+FROM scidash/neuronunit
 
 #Install channelworm
 RUN pip install django
