@@ -5,7 +5,7 @@ FROM scidash/neuronunit
 USER ROOT
 RUN add-apt-repository ppa:webupd8team/sublime-text-2
 RUN apt-get update
-RUN apt-get install -y iceweisel gedit atom
+RUN apt-get install -y iceweisel gedit atom sublime-text
 
 RUN python -c "import pyneuroml"
 
