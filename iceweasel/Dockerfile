@@ -1,29 +1,20 @@
 #author Russell Jarvis rjjarvis@asu.edu
 #author Rick Gerkin rgerkin@asu.edu
-
 FROM scidash/neuronunit
-USER ROOT
-RUN add-apt-repository ppa:webupd8team/sublime-text-2
-RUN apt-get update
-RUN apt-get install -y iceweisel gedit atom sublime-text
+USER root
 
+RUN apt-get update
+RUN apt-get install -y iceweasel gedit meld gvfs-bin
+
+RUN wget https://atom.io/download/deb -O atom.deb
+RUN dpkg -i atom.deb
 RUN python -c "import pyneuroml"
 
-RUN conda install -y pyqt
-#RUN conda install -y matplotlib 
 
-RUN mkdir $HOME/work/scidash
+
 ENV WORK_HOME $HOME/work/scidash
 
-RUN git clone -b dev https://github.com/scidash/sciunit.git $WORK_HOME/sciunit
-ENV PYTHONPATH=$PYTHONPATH:$WORK_HOME/sciunit
-RUN python -c "import sciunit"
-
-RUN git clone -b dev https://github.com/scidash/neuronunit.git $WORK_HOME/neuronunit
-ENV PYTHONPATH=$PYTHONPATH:$WORK_HOME/neuronunit
 RUN chown -R jovyan $HOME
-RUN find /opt/conda ! -user jovyan -print0 | xargs -0 -I {} chown jovyan {}
-
 USER $NB_USER
 
 
@@ -39,7 +30,9 @@ RUN python -c "import deap"
 RUN nrniv
 
 #The following are convenience aliases
-RUN echo 'alias nb="jupyter-notebook --ip=* --no-browser"' >> ~/.bashrc
+RUN echo 'alias nb="jupyter-notebook'
+
+
 RUN echo 'alias mnt="cd /home/mnt"' >> ~/.bashrc
 RUN echo 'alias erc="emacs ~/.bashrc"' >> ~/.bashrc
 RUN echo 'alias src="source ~/.bashrc"' >> ~/.bashrc
