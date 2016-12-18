@@ -16,6 +16,7 @@ RUN curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-
 RUN python -c "import pyneuroml"
 
 
+
 ENV WORK_HOME $HOME/work/scidash
 RUN ipython profile create default
 RUN apt-get install libxss1
