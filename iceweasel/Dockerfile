@@ -3,17 +3,24 @@
 FROM scidash/neuronunit
 USER root
 
+ENV ATOM_VERSION v1.12.7
 RUN apt-get update
-RUN apt-get install -y iceweasel gedit meld gvfs-bin
+RUN apt-get install -y iceweasel gedit meld gvfs-bin 
+RUN apt-get install -y curl
 
-RUN wget https://atom.io/download/deb -O atom.deb
-RUN dpkg -i atom.deb
+RUN curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb > /tmp/atom.deb && dpkg -i /tmp/atom.deb && rm -f /tmp/atom.deb 
+   
+    
+    
+#RUN dpkg -i atom.deb
 RUN python -c "import pyneuroml"
 
 
-
 ENV WORK_HOME $HOME/work/scidash
-
+RUN ipython profile create default
+RUN apt-get install libxss1
+#RUN apt-get update
+#RUN apt-get apt-utils
 RUN chown -R jovyan $HOME
 USER $NB_USER
 
@@ -30,8 +37,7 @@ RUN python -c "import deap"
 RUN nrniv
 
 #The following are convenience aliases
-RUN echo 'alias nb="jupyter-notebook'
-
+RUN echo 'alias nb="jupyter notebook --browswer iceweasel'
 
 RUN echo 'alias mnt="cd /home/mnt"' >> ~/.bashrc
 RUN echo 'alias erc="emacs ~/.bashrc"' >> ~/.bashrc
