@@ -4,7 +4,8 @@
 
 ## Support for graphical development ipython notebook.
 
-Docker image internal support for graphical browser (`iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`). 
+Docker image internal support for graphical browser (`chromium/iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`). 
+
 
 ## For an Ubuntu host:
 This works very easily.
@@ -17,7 +18,12 @@ alias drh=' sudo docker run -it -e DISPLAY=$DISPLAY -v `pwd`:/home/mnt \
                                                     -v /tmp/.X11-unix:/tmp/.X11-unix \
                                                     deapscoop1 /bin/bash'
 ```
-The alias probably should instead be function that is able to accept arguments also.
+# After building and running the Dockerfile
+
+1 launch jupyter notebook. 
+2 Send it to the background with control-c
+3 launch a chromium or iceweasel
+4 navigate to `URL: http://localhost:8888/tree`
 
 ## For an Apple/MAC host
 
