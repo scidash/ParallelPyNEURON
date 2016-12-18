@@ -1,6 +1,7 @@
-## Support for graphical development ipython notebook.
+## Support for graphical development inside docker image (if you can't merge with vimdiff).
 
-Docker image internal support for graphical browser (`iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`). 
+
+Docker image internal support for graphical browser (`iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`). Notebook doesn't work in the browser yet.
 
 ## For an Ubuntu host:
 This works very easily.
@@ -11,6 +12,8 @@ I have defined the alias in my `~/.bashrc`:
 ```
 alias drh=' sudo docker run -it -e DISPLAY=$DISPLAY -v `pwd`:/home/mnt \
                                                     -v /tmp/.X11-unix:/tmp/.X11-unix \
+                                                    -v /dev/shm:/dev/shm \
+                                                    -v ${HOME}/.atom:/home/atom/.atom \
                                                     deapscoop1 /bin/bash'
 ```
 The alias probably should instead be function that is able to accept arguments also.
