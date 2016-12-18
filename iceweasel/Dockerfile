@@ -4,6 +4,7 @@ FROM scidash/neuronunit
 USER root
 
 RUN apt-get update
+#Install a browser to run notebooks, meld to facilitate graphical git merging, gvsfs an atom browser dependency.
 RUN apt-get install -y iceweasel gedit meld gvfs-bin
 
 RUN wget https://atom.io/download/deb -O atom.deb
