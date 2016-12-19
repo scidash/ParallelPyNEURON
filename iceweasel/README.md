@@ -1,8 +1,7 @@
 ## Support for graphical development inside docker image 
 
-This is useful if you use docker terminal interactively, and if you can't merge with vimdiff.
+Support for using graphical browser (`iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`) and ipython notebook all inside a dockerimage. These programs are useful if you use docker terminal interactively, and if you can't merge with vimdiff.
 
-Docker image internal support for graphical browser (`iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`). Notebook doesn't work in the browser yet.
 
 ## For an Ubuntu host:
 This works very easily.
