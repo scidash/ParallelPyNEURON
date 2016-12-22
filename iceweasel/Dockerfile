@@ -8,47 +8,31 @@ RUN apt-get update
 RUN apt-get install -y gedit meld gvfs-bin iceweasel
 RUN apt-get install -y curl
 
-
-
 RUN curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb > /tmp/atom.deb && dpkg -i /tmp/atom.deb && rm -f /tmp/atom.deb
-
-
-
 
 ENV WORK_HOME $HOME/work/scidash
 
-
 RUN ipython profile create default
 
-
 RUN apt-get update && apt-get install -y xvfb chromium
-
 #ADD xvfb-chromium /usr/bin/xvfb-chromium
 RUN ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome
 RUN ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browse
-
-
-#Even install a graphical a file explorer.
-
 RUN apt-get install -y libxss1 
 WORKDIR $HOME
 RUN git clone https://github.com/ipython/ipyparallel
-
 WORKDIR $HOME/ipyparallel
 RUN python3 setup.py install
-
-
 WORKDIR $HOME
 RUN git clone https://github.com/rkern/line_profiler
 WORKDIR $HOME/line_profiler
 RUN python setup.py install
-
 WORKDIR $WORK_HOME
 RUN git clone https://github.com/BlueBrain/BluePyOpt
 WORKDIR $WORK_HOME/BluePyOpt
 RUN python3 setup.py install
-
 RUN ipcluster nbextension enable
+
 ENV PATH $PATH:/opt/conda/bin
 ENV PATH $PATH:/opt/conda/bin/ipython
 ENV PATH $PATH:/opt/conda/bin/pip
@@ -65,21 +49,10 @@ RUN easy_install greenlet
 
 RUN git clone https://github.com/soravux/scoop
 WORKDIR scoop
-
-RUN python3 setup.py install
-
-
+RUN python setup.py install
 RUN chown -R jovyan $HOME
 
 USER $NB_USER
-
-# add docker compose variables.
-#
-ARG username
-ARG email
-
-
-
 
 RUN python -c "import pyneuroml"
 RUN python -c "import neuronunit"
