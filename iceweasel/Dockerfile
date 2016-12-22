@@ -9,14 +9,13 @@ RUN apt-get install -y gedit meld gvfs-bin iceweasel
 RUN apt-get install -y curl
 RUN apt-get install -y python3-setuptools
 RUN apt-get install -y python3-matplotlib
+RUN apt-get update && apt-get install -y xvfb chromium
 
 RUN pip install --upgrade pip
-
 RUN curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb > /tmp/atom.deb && dpkg -i /tmp/atom.deb && rm -f /tmp/atom.deb
 
 ENV WORK_HOME $HOME/work/scidash
 
-RUN apt-get update && apt-get install -y xvfb chromium
 #ADD xvfb-chromium /usr/bin/xvfb-chromium
 RUN ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome
 RUN ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browse
@@ -34,15 +33,12 @@ RUN git clone https://github.com/BlueBrain/BluePyOpt
 WORKDIR $WORK_HOME/BluePyOpt
 RUN python3 setup.py install
 RUN ipcluster nbextension enable
-
 RUN ipython profile create default
 
 ENV PATH $PATH:/opt/conda/bin
 ENV PATH $PATH:/opt/conda/bin/ipython
 ENV PATH $PATH:/opt/conda/bin/pip
 ENV PATH $PATH:/opt/conda/bin/python
-
-
 ENV PATH $PATH:/opt/conda/bin
 
 RUN easy_install gevent
