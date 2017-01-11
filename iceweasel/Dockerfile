@@ -3,21 +3,31 @@
 FROM scidash/neuronunit
 USER root
 
+
+RUN pip install --upgrade pip
+RUN apt-get install -y python-matplotlib
+
+RUN easy_install gevent
+RUN easy_install greenlet
+
+
+RUN pip install git+https://github.com/rkern/line_profiler
+
+
+
+
+RUN python setup.py install
+
+
+
 ENV ATOM_VERSION v1.12.7
 RUN apt-get update
 RUN apt-get install -y gedit meld gvfs-bin iceweasel
 RUN apt-get install -y curl
-RUN apt-get install -y python3-setuptools
-RUN apt-get install -y python3-matplotlib
-RUN apt-get update && apt-get install -y xvfb chromium
 
-RUN pip install --upgrade pip
+
 
 RUN curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb > /tmp/atom.deb && dpkg -i /tmp/atom.deb && rm -f /tmp/atom.deb
-
-ENV WORK_HOME $HOME/work/scidash
-
-
 
 #Install a browser:
 RUN apt-get update && apt-get install -y xvfb chromium
@@ -26,57 +36,16 @@ RUN ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome
 RUN ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browse
 
 #Install a line profiler:
-WORKDIR $HOME
-RUN git clone https://github.com/rkern/line_profiler
-WORKDIR $HOME/line_profiler
-RUN python setup.py install
+#WORKDIR $HOME
+#RUN pip git clone https://github.com/rkern/line_profiler
+#WORKDIR $HOME/line_profiler
+#RUN python setup.py install
 
 
 ENV WORK_HOME $HOME/work/scidash
 
 
 RUN ipython profile create default
-
-
-#Install python3.6
-RUN wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz
-RUN tar xvf Python-3.6.0.tgz
-WORKDIR Python-3.6.0
-RUN apt-get install -y zlib1g-dev
-RUN ./configure --enable-optimizations
-RUN make -j8
-RUN make altinstall
-RUN python3.6
-RUN pip install future
-RUN pip install --upgrade pip
-RUN apt-get install -y python-matplotlib
-
-RUN easy_install gevent
-RUN easy_install greenlet
-
-
-WORKDIR $WORK_HOME
-RUN git clone https://github.com/PythonCharmers/python-future
-WORKDIR $WORK_HOME/python-future
-RUN python3.6 setup.py install
-
-RUN pip install markupsafe
-
-
-RUN git clone git://github.com/mitsuhiko/jinja2.git
-WORKDIR jinja2
-RUN python3.6 setup.py install
-
-
-WORKDIR $WORK_HOME/BluePyOpt
-
-WORKDIR $WORK_HOME
-RUN git clone https://github.com/BlueBrain/BluePyOpt
-WORKDIR $WORK_HOME/BluePyOpt
-RUN python3.6 setup.py install
-
-
-
 #
 RUN apt-get install -y libxss1
 WORKDIR $HOME
@@ -90,17 +59,18 @@ RUN python3 setup.py install
 
 RUN git clone https://github.com/soravux/scoop
 WORKDIR scoop
-RUN python3.6 setup.py install
+RUN python setup.py install
 
 RUN ipcluster nbextension enable
-RUN ipython profile create default
-
 ENV PATH $PATH:/opt/conda/bin
 ENV PATH $PATH:/opt/conda/bin/ipython
 ENV PATH $PATH:/opt/conda/bin/pip
 ENV PATH $PATH:/opt/conda/bin/python
+
+RUN apt-get install -y python3-setuptools
 ENV PATH $PATH:/opt/conda/bin
 
+RUN pip install --upgrade pip
 RUN apt-get install -y python-matplotlib
 
 RUN easy_install gevent
@@ -109,7 +79,7 @@ RUN easy_install greenlet
 RUN git clone https://github.com/soravux/scoop
 WORKDIR scoop
 
-RUN python3 setup.py install
+RUN python setup.py install
 
 RUN apt-get install povray eog
 
@@ -117,6 +87,10 @@ RUN chown -R jovyan $HOME
 
 USER $NB_USER
 
+# add docker compose variables.
+#
+ARG username
+ARG email
 
 
 
