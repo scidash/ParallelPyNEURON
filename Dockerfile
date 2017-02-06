@@ -173,8 +173,8 @@ RUN python -c "import scoop; import deap"
 
 RUN sudo /opt/conda/bin/conda install matplotlib
 
-    Contact GitHub API Training Shop Blog About 
+#    Contact GitHub API Training Shop Blog About 
 
-    © 2016 GitHub, Inc. Terms Privacy Security Status Help 
+#   © 2016 GitHub, Inc. Terms Privacy Security Status Help 
 
 
