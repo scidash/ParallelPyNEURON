@@ -1,0 +1,9 @@
+.ipynb_checkpoints/
+build/
+PyNeuronToolbox/*.pyc
+/PyNeuronToolbox
+Dockerfile.orig 
+geo5038804.hoc 	
+LICENSE
+index.ipynb 	
+setup.py 	

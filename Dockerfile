@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git gcc g++ build-essential \ 
     libglib2.0-0 libxext6 libsm6 libxrender1 \
-    libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev 
+    libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
+    default-jre default-jdk maven emacs
     
 RUN apt-get update; apt-get install -y automake libtool git vim  \
                        wget python3 libpython3-dev libncurses5-dev libreadline-dev libgsl0-dev cython3 \
@@ -21,12 +22,6 @@ RUN apt-get update; apt-get install -y automake libtool git vim  \
                        python3-venv python3-mpi4py python3-tables cmake
 
 
-
-#RUN pip install --upgrade pip \
-#    && pip install -U setuptools 
-
-
-    
 #The following code is adapted from:
 #https://github.com/ContinuumIO/docker-images/blob/master/anaconda/Dockerfile    
 
@@ -39,8 +34,22 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
 #This will create a more familiar environment to continue developing in.
 #with less of a need to chown and chmod everything done as root at dockerbuild completion
 
+RUN useradd -ms /bin/bash docker
+USER root
+RUN apt-get update \
+      && apt-get install -y sudo \
+      && rm -rf /var/lib/apt/lists/*
+RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+USER docker
+WORKDIR /home/docker
+RUN chown -R docker:docker /home/docker
+ENV HOME /home/docker 
+ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
+RUN sudo /opt/conda/bin/conda install scipy numpy matplotlib
 
 #Test matplotlib
+RUN /opt/conda/bin/python -c "import matplotlib"
 #Install General MPI, such that mpi4py can later bind with it.
 
 #WORKDIR $HOME
@@ -88,6 +97,7 @@ RUN echo "docker ALL=NOPASSWD: ALL" >> /etc/sudoers
 ENV HOME /home/docker 
 ENV PATH $HOME/nrn-7.4/x86_64/bin:$PATH
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
+
 
 
 
