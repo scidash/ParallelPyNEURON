@@ -3,10 +3,18 @@
 
 FROM scidash/neuronunit
 
+ENV WORK_HOME $HOME/work
+
 #Install channelworm
 RUN pip install django
-RUN git clone https://github.com/russelljjarvis/ChannelWorm.git $WORK_HOME/ChannelWorm
+RUN pip install pytest
+RUN pip install django-formtools
+RUN pip install django-sql-explorer
+RUN git clone -b dev https://github.com/openworm/ChannelWorm.git $WORK_HOME/ChannelWorm
+WORKDIR $WORK_HOME/ChannelWorm
+RUN python setup.py install
 ENV PYTHONPATH $PYTHONPATH:$WORK_HOME/ChannelWorm
+WORKDIR $WORK_HOME
 RUN python -c "import channelworm"
 
 #Install NeuroConstruct
@@ -17,8 +25,7 @@ RUN bash nCenv.sh
 RUN echo 'export NC_HOME=$WORK_HOME/neuroConstruct' >> ~/.bashrc
 ENV PYTHONPATH $PYTHONPATH:$WORK_HOME/neuroConstruct
 RUN python -c "import pythonnC" 
-RUN echo 'export NEURON_HOME=/home/jovyan/neuron/nrn-7.4/x86_64' >> ~/.bashrc
+RUN echo 'export NEURON_HOME=$HOME/neuron/nrn-7.4/x86_64' >> ~/.bashrc
 
-#Uncomment the following two lines if you don't want to log in to the docker image interactively.
-WORKDIR /home/mnt
-#ENTRYPOINT python -i /home/jovyan/mnt/sciunitopt/AIBS.py 
+WORKDIR /home/jovyan/work
+RUN python -c "import channelworm; channelworm.django_setup()"

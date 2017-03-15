@@ -1,5 +1,6 @@
-#author Russell Jarvis rjjarvis@asu.edu
-#author Rick Gerkin rgerkin@asu.edu
+# neuron-mpi-neuroml
+# author Russell Jarvis rjjarvis@asu.edu
+# author Rick Gerkin rgerkin@asu.edu
 
 FROM jupyter/scipy-notebook
 USER root
@@ -16,6 +17,8 @@ RUN apt-get install -y wget bzip2 ca-certificates \
     libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
     default-jre default-jdk maven emacs \
     libxml2-dev libxslt-dev python-dev sudo
+
+RUN pip install --upgrade pip
     
 # Make sure every Python file belongs to jovyan
 RUN find /opt/conda ! -user jovyan -print0 | xargs -0 -I {} chown jovyan {}
