@@ -16,4 +16,5 @@ RUN mkdir -p neuronunit
 RUN tar -xvzf neuronunit.tar.gz -C neuronunit --strip-components=1
 WORKDIR neuronunit
 RUN python setup.py install
+RUN python test_all.py
 WORKDIR $HOME/$WORKDIR

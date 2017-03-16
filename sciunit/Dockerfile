@@ -16,4 +16,5 @@ RUN mkdir -p sciunit
 RUN tar -xvzf sciunit.tar.gz -C sciunit --strip-components=1
 WORKDIR sciunit
 RUN python setup.py install
+RUN python test_all.py
 WORKDIR $HOME/$WORKDIR
