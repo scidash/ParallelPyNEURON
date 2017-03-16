@@ -13,13 +13,13 @@ USER root
 RUN apt-get update
 RUN apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
-    git gcc g++ build-essential \ 
+    git gcc g++ build-essential \
     libncurses-dev openmpi-bin openmpi-doc libopenmpi-dev \
     default-jre default-jdk maven emacs \
     libxml2-dev libxslt-dev python-dev sudo
 
 RUN pip install --upgrade pip
-    
+
 # Make sure every Python file belongs to jovyan
 RUN find /opt/conda ! -user jovyan -print0 | xargs -0 -I {} chown jovyan {}
 # Remove dangling symlinks

@@ -13,7 +13,7 @@ RUN tar -xzf nrn-7.4.tar.gz && rm nrn-7.4.tar.gz
 #WORKDIR $HOME
 #RUN wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-2.0.0.tar.gz
 #RUN tar -xzf openmpi-2.0.0.tar.gz && rm openmpi-2.0.0.tar.gz
-#WORKDIR $HOME/openmpi-2.0.0
+#WORKDIR openmpi-2.0.0
 
 # Compile openmpi
 #RUN ./configure
@@ -31,7 +31,7 @@ RUN tar -xzf nrn-7.4.tar.gz && rm nrn-7.4.tar.gz
 ######
 
 ###### Without MPI ######
-WORKDIR $HOME/nrn-7.4
+WORKDIR nrn-7.4
 RUN ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python
 ######
 
