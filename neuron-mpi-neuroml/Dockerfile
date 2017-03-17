@@ -4,6 +4,7 @@
 
 FROM scidash/scipy-notebook-plus
 
+WORKDIR $HOME
 RUN wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz
 RUN tar -xzf nrn-7.4.tar.gz && rm nrn-7.4.tar.gz 
 
@@ -43,7 +44,6 @@ WORKDIR src/nrnpython
 RUN python setup.py install
 ENV NEURON_HOME $HOME/nrn-7.4/x86_64
 ENV PATH $NEURON_HOME/bin:$PATH
-WORKDIR $HOME
 
 # Get JNeuroML
 #Change to this when PR is accepted
@@ -51,3 +51,4 @@ WORKDIR $HOME
 RUN git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
 RUN python getNeuroML.py
+WORKDIR $HOME
