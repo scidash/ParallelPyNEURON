@@ -1,5 +1,9 @@
 
-FROM scidash/scipy-notebook-plus
+#FROM scidash/scipy-notebook-plus
+FROM neuralensemble/base
+MAINTAINER andrew.davison@unic.cnrs-gif.fr
+ENV NEST_VER=2.12.0 NRN_VER=7.4
+
 USER root
 
 WORKDIR $HOME
@@ -38,7 +42,7 @@ WORKDIR $HOME
 
 # Get JNeuroML
 #Change to this when PR is accepted
-#RUN git clone https://github.com/NeuroML/jNeuroML
-#RUN git clone https://github.com/russelljjarvis/jNeuroML.git
-#WORKDIR jNeuroML
-#RUN python getNeuroML.py
+RUN git clone https://github.com/NeuroML/jNeuroML
+RUN git clone https://github.com/russelljjarvis/jNeuroML.git
+WORKDIR jNeuroML
+RUN python getNeuroML.py
