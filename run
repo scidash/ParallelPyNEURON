@@ -1,2 +1,8 @@
 #!/bin/bash
-docker run -it -p 8887:8888 -v $HOME/Dropbox:/home/mnt scidash/$1 jupyter-notebook --ip=0.0.0.0 --NotebookApp.token="" --NotebookApp.disable_check_xsrf=True
+if [ $2 ]; then
+  cmd=$2
+else
+  cmd='jupyter-notebook --ip=0.0.0.0 --NotebookApp.token="" --NotebookApp.disable_check_xsrf=True'
+fi
+
+docker run -it -p 8887:8888 -v $HOME/Dropbox:/home/jovyan/Dropbox scidash/$1 $cmd
