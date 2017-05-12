@@ -90,5 +90,5 @@ RUN mpiexec -np 4 nrniv -mpi test5.hoc
 RUN mpiexec -np 4 nrniv -mpi test6.hoc
 RUN mpiexec -np 4 nrniv -mpi test7.hoc
 
-
-#RUN mpiexec -np 4 nrniv -mpi -python test0.py
+ADD ./test_fixed.py /home/docker/nrn-7.4/src/parallel/
+RUN mpiexec -np 4 nrniv -mpi -python test_fixed.py
