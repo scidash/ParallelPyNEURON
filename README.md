@@ -63,3 +63,42 @@ The hierarchy of docker images here is:
 #### scipy-notebook-plus
 ###### depends on
 #### jupyter/scipy-notebook (http://github.com/jupyter/docker-stacks)
+
+Want to run JupyterHub with one of these images?  Put something like this in your `jupyterhub-config.py` file and follow the instructions in the comments.  More is required if you want SSL, GitHub authentication, etc.:  
+```python
+import os
+import platform
+import netifaces
+
+# Install the proxy first:
+# npm install -g configurable-http-proxy
+# If NPM is not working on your Mac, try this:  
+# https://gist.github.com/DanHerbert/9520689
+
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+
+# You need to open up a port on the host that a Docker container can access:
+# sudo ifconfig lo0 alias 10.200.11.1/24
+if platform.system == 'Darwin':
+    lo0 = netifaces.ifaddresses('lo0')
+    try:
+        docker0_ipv4 = lo0[netifaces.AF_INET][1]
+    except IndexError:
+        raise Exception(("OSX hosts must add an additional IP to the loopback interface that the Docker container can access, "
+                         "e.g. 'sudo ifconfig lo0 alias 10.200.10.1/24'"))
+else:
+    docker0 = netifaces.ifaddresses('docker0')
+    docker0_ipv4 = lo0[netifaces.AF_INET][0]
+ip = docker0_ipv4['addr']
+
+c.JupyterHub.ip = ip
+c.JupyterHub.hub_ip = ip
+
+# If you make changes an restart the server, you might want to kill 
+# the Docker container so that it starts a new one instead of using the old one:
+# docker rm -f $(docker ps -a -q) # Careful, this kills all the containers. 
+c.DockerSpawner.container_image = 'scidash/neuronunit-showcase'
+c.DockerSpawner.extra_create_kwargs.update({
+    'command': '/usr/local/bin/start-singleuser.sh'
+})
+```
