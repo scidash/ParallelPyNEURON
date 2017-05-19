@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates default-jre 
                        ipython3 python3-docutils \
                        python3-mpi4py cmake ssh
 
+RUN sudo /opt/conda/bin/conda install scipy numpy matplotlib
+
 
 #Do the rest of the build  as user:
 #This will create a more familiar environment to continue developing in.
@@ -25,8 +27,7 @@ USER jovyan
 WORKDIR /home/jovyan
 RUN sudo chown -R jovyan /home/jovyan
 ENV HOME /home/jovyan
-#ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
-RUN sudo /opt/conda/bin/conda install scipy numpy matplotlib
+ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 
 #Test matplotlib
 #RUN python -c "import matplotlib"
@@ -40,8 +41,6 @@ RUN \
   rm nrn-7.4.tar.gz
 
 WORKDIR $HOME/nrn-7.4
-RUN whereis python3
-RUN which mpirun
 ENV PATH /usr/bin/python3/python:/opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 RUN ./configure --prefix=`pwd` --with-paranrn --without-iv --with-nrnpython=/usr/bin/python3
 RUN sudo make all && \
@@ -66,13 +65,21 @@ RUN mpiexec -np 4 nrniv -mpi test7.hoc
 
 ADD ./test_fixed.py /home/docker/nrn-7.4/src/parallel/
 RUN mpiexec -np 4 nrniv -mpi -python test_fixed.py
-RUN sudo pip3 install zmq
-RUN sudo pip3 install packaging
-RUN sudo pip3 install --upgrade pip#notebook
-RUN sudo pip3 install notebook
-RUN sudo pip3 install ipyparallel
-RUN sudo ipcluster nbextension enable
-RUN sudo ipython profile create chase
-#RUN ipcluster start -n 4 --engines=MPIEngineSetLauncher
+
+RUN sudo /opt/conda/bin/pip install zmq
+RUN sudo /opt/conda/bin/pip install packaging
+#RUN sudo /opt/conda/bin/pip install --upgrade pip#notebook
+RUN sudo /opt/conda/bin/pip install notebook
+RUN sudo /opt/conda/bin/pip install ipyparallel
+RUN which /opt/conda/bin/ipcluster
+RUN sudo /opt/conda/bin/ipcluster nbextension enable
+RUN sudo /opt/conda/bin/ipython profile create chase
+ENV PYTHONPATH "/opt/conda/bin/python3.5/dist-packages"
+RUN echo $PYTHONPATH
+RUN which python
+RUN /opt/conda/bin/ipython -c "import sys; print(sys.path)"
+RUN /opt/conda/bin/ipython -c "from ipyparallel import Client"
+#RUN /opt/conda/bin/ipython -c "import os;os.system('ipcluster start -n 4 --engines=MPIEngineSetLauncher')"
+
 #RUN sudo ipcluster start --profile=chase --debug &
-#RUN mpiexec -n 4 ipengine --mpi=mpi4py
+#RUN mpiexec -n 4 ipengine --mpi=mpi4pyB
