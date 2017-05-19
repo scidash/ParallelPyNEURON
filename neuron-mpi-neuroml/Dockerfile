@@ -73,8 +73,8 @@ USER jovyan
 
 WORKDIR $HOME/git
 #TODO change back to this repository, once pull request as accepted for python3 compliant code
-RUN sudo git clone https://github.com/NeuroML/jNeuroML
-#RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
+#RUN sudo git clone https://github.com/NeuroML/jNeuroML
+RUN sudo git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR $HOME/git/jNeuroML
 RUN sudo python getNeuroML.py
 
@@ -91,7 +91,13 @@ RUN mpiexec -np 4 nrniv -mpi test7.hoc
 
 ADD ./test_fixed.py /home/docker/nrn-7.4/src/parallel/
 RUN mpiexec -np 4 nrniv -mpi -python test_fixed.py
-RUN pip3 install ipyparallel
-RUN ipcluster nbextension enable
-RUN ipython profile create default
-RUN ipcluster start --profile=chase --debug &
+RUN sudo pip3 install zmq
+RUN sudo pip3 install packaging
+RUN sudo pip3 install --upgrade pip#notebook
+RUN sudo pip3 install notebook
+RUN sudo pip3 install ipyparallel
+RUN sudo ipcluster nbextension enable
+RUN sudo ipython profile create chase
+RUN ipcluster start -n 4 --engines=MPIEngineSetLauncher
+#RUN sudo ipcluster start --profile=chase --debug &
+RUN mpiexec -n 4 ipengine --mpi=mpi4py
