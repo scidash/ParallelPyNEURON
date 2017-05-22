@@ -13,9 +13,9 @@ id = int(pc.id())
 nhost = int(pc.nhost())
 
 print('I am a demonstration that NEURONs parallel context and ipyparallel are compossible, by showing the rank read outs are equal/same:')
-print('%d of %d %d' %(id, nhost))#, pc0))
+print('%d of %d' %(id, nhost))#, pc0))
 
-print((rc.ids))
+print(int(rc.ids[id]))
 
 pc.runworker()
 pc.done()
