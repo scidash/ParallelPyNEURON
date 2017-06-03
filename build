@@ -1,2 +1,11 @@
 #!/bin/bash
-docker build $1 -t scidash/$1
+name=$1 # Name of the container to build
+if [[ $name == *unit ]]; then
+    # If the value of HEAD has changed, meaning there have been new commits to the dev branch, 
+    # the build will be sure to download a new tar of the repo.  Otherwise, it will use the cached version
+    # of the repo and the container.  
+    HEAD=`git ls-remote https://github.com/scidash/$name | grep refs/heads/dev | cut -f 1`
+    docker build --build-arg HEAD=$HEAD $name -t scidash/$name
+else
+   docker build $name -t scidash/$name
+fi
