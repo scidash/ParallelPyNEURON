@@ -1,43 +1,11 @@
-#author Russell Jarvis rjjarvis@asu.edu
-#author Rick Gerkin rgerkin@asu.edu
+# author Russell Jarvis rjjarvis@asu.edu
+# author Rick Gerkin rgerkin@asu.edu
+# neuronunit-showcase
 
 FROM scidash/neuronunit
 
-ENV WORK_HOME $HOME/work
-
 #################
-# Showcase for ChannelWorm (https://github.com/openworm/ChannelWorm), 
-# a subproject of Open Worm (http://www.openworm.org/)
-#################
-WORKDIR $HOME
-RUN pip install django
-RUN pip install pytest
-RUN pip install django-formtools
-RUN pip install django-sql-explorer
-RUN git clone -b dev https://github.com/openworm/ChannelWorm.git $HOME/ChannelWorm
-WORKDIR $HOME/ChannelWorm
-RUN python setup.py install
-ENV PYTHONPATH $PYTHONPATH:$HOME/ChannelWorm
-WORKDIR $WORK_HOME
-RUN python -c "import channelworm; channelworm.django_setup()"
-
-#################
-# Showcase for NeuroConstruct (http://www.neuroconstruct.org/) by Padraig Gleeson, 
-# a subproject of Neural Ensemble (http://neuralensemble.org/)
-#################
-WORKDIR $HOME
-RUN git clone https://github.com/NeuralEnsemble/neuroConstruct.git $HOME/neuroConstruct
-WORKDIR $HOME/neuroConstruct
-RUN bash nC.sh -make
-RUN bash nCenv.sh
-RUN echo 'export NC_HOME=$HOME/neuroConstruct' >> ~/.bashrc
-ENV PYTHONPATH $PYTHONPATH:$HOME/neuroConstruct
-WORKDIR $WORK_HOME
-RUN python -c "import pythonnC" 
-RUN echo 'export NEURON_HOME=$HOME/neuron/nrn-7.4/x86_64' >> ~/.bashrc
-
-#################
-# Showcase for developmental features of NeuronUnit.
+# Showcase for model optimization using NeuronUnit.
 #################
 USER root
 
@@ -62,18 +30,20 @@ RUN conda install mpi4py
 RUN easy_install gevent
 RUN easy_install greenlet
 
-#ENV WORK_HOME $WORK_HOME/scidash
+##### Scoop #####
 WORKDIR $HOME
 RUN git clone https://github.com/soravux/scoop
 WORKDIR scoop
 RUN python setup.py install
 
+##### BluePyOpt ######
 WORKDIR $HOME
 RUN git clone https://github.com/russelljjarvis/BluePyOpt.git
 WORKDIR BluePyOpt
 RUN python setup.py install
 RUN python -c "import bluepyopt"
 
+##### IPython Cluster #####
 USER $NB_USER
 WORKDIR $HOME
 RUN ipython profile create default

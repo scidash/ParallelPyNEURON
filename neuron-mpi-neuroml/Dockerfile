@@ -37,7 +37,7 @@ RUN ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/pyth
 ######
 
 RUN make all
-RUN sudo make install
+RUN make install
 
 # Create python bindings for NEURON
 WORKDIR src/nrnpython
@@ -48,7 +48,8 @@ ENV PATH $NEURON_HOME/bin:$PATH
 # Get JNeuroML
 #Change to this when PR is accepted
 #RUN git clone https://github.com/NeuroML/jNeuroML
+WORKDIR $HOME
 RUN git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
 RUN python getNeuroML.py
-WORKDIR $HOME
+WORKDIR $WORK_HOME
