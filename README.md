@@ -10,38 +10,27 @@ Purpose: The building of development environments raises an unnecessary technica
 [Download and install Docker](https://www.docker.com/community-edition#/download)
 
 ## 2 
-### Option 1:
-`docker pull scidash/<image-name>` where `<image-name>` is one of the sub-directories above (e.g. `neuronunit-showcase`).
-### Option 2:
-Build the whole SciDash stack from source instead just download the pre-compiled image with
-`./build-all`
-### Option 3:
-Build just one image with:
-`./build <image-name>`
-This is similar to the usual `docker build` command except that it checks GitHub to see if a newer version of the corresponding SciDash repository is available, and downloads that code, before building the image.  
+- Clone or download this repository:
+`git clone https://github.com/scidash/docker-stacks`
+- Execute the run script with the name of the image you want to run. 
+It may first spend some time downloading the image.  
+`./run neuronunit`
+- Go to http://localhost:8887 in your web browser.
+- Create your own notebook that can import and run the tools installed in the container, or
+- Run documentation notebooks in the \*docs folder
 
-Run step 3 to confirm the presence of the image, and step 4 to enter the docker container.
+### Optional Steps:
+- Optionally set the environment variable NOTEBOOK_HOME to the directory that you want to be accessible from within the container.  The default is to use your HOME directory.  
+- Optionally change the HOST_PORT in the script from 8887 to some other available port.  
+- Instead of using the included scripts you can do the usual `docker pull scidash/<image-name>` where `<image-name>` is one of the sub-directories above (e.g. `neuronunit`).  Then do `docker run -it -p 8887:8888 scidash/<image-name>` to launch it.  
+- `./shell <image-name>` to get a shell inside the given container.  
+- Rebuild the whole SciDash stack from source instead just download the pre-compiled image with
+`./build-all` or build just one image with:
+`./build <image-name>`. This is similar to the usual `docker build` command except that it checks GitHub to see if a newer version of the corresponding SciDash repository is available, and downloads that code, before building the image.  
+- Optionally set the environment variable SCIDASH_HOME to the location of your sciunit and neuronunit working copies, which will be mounted in the container to override the installed versions when the `-dev` flag is passed to `run` or `shell`.
+- The docker image is able to use the same number of CPUs available on the host system see below, so dont' forget to [change your Docker settings](http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system) if you want to use the maximum number of CPUs or more memory inside the container.
 
-## 3
-### Option 1:
-`docker run -it -p 8887:8888 <image-name>`
-Then point your web browser to `localhost:8887` to create a Jupyter notebook where you can explore the tools.  
-### Option 2:
-`./run <image-name>`
-This takes care of the port configuration and also mounts your local `$HOME/Dropbox` directory (if you have one), so you can create or edit persistent notebooks.  You can edit the `run` script to change this to the location of your preferred notebook directory on your local machine.  
-### Option 3:
-`./run <image-name> bash`
-Start a shell in the built image in order to do other things, e.g. install new packages.  
-
-#### The docker image is able to use the same number of CPUs available on the host system see below:
-##### http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system
-
-#### To mount a directory containing development files inside the docker container using OSX as the base system use:
-`docker run -v /Users/<path>:/<container path> ...`
-##### Reference: https://docs.docker.com/engine/tutorials/dockervolumes/
-
-## 4
-Want to run JupyterHub with one of these images?  
+### Want to run JupyterHub with one of these images?  
 ```
 sudo apt-get install npm nodejs-legacy
 npm install -g configurable-http-proxy
