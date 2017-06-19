@@ -1,0 +1,37 @@
+NAME=$1 # e.g. "neuronunit-optimization"
+CONTAINER_STATUS=$(docker ps --filter="name=$NAME" -q | xargs) # Is the container running?  
+if [ $CONTAINER_STATUS ]; then # If so...
+  docker rm -f "$NAME" # Stop it and remove it.  
+fi
+USER_HOME=/home/jovyan # User home inside the container  
+WORK_HOME=${USER_HOME}/work # Where user work is located  
+if [ "$2" = "-dev" ]; then # If we want to use local copies of sciunit and neuronunit
+  docker run -d \
+   -v $SCIDASH_HOME/sciunit:$WORK_HOME/sciunit \
+   -v $SCIDASH_HOME/neuronunit:$WORK_HOME/neuronunit \
+   --name="$NAME" scidash/$NAME
+  TEST_HOME=$WORK_HOME
+else # Otherwise we will use the ones in the containers cloned from GitHub  
+  docker run -d --name="$NAME" scidash/$NAME
+  TEST_HOME=$USER_HOME
+fi
+IFS='-'
+TOKENS=( $NAME ) # tokenize the name of the container
+UNIT=${TOKENS[0]} # e.g. "neuronunit"
+EXTRA=${TOKENS[1]} # e.g. "optimization"
+if [ "$EXTRA" = "" ]; then # If we are only testing the base container, e.g. neuronunit
+  EXTRA=core # Then add the core tests.  
+fi
+if [ "$UNIT" = "sciunit" ]; then
+  docker exec -it "$NAME" bash -c "cd $TEST_HOME/sciunit; \
+                                 export PYTHONPATH=$TEST_HOME/sciunit
+                              python -m unittest -b test_all.py"
+elif [ "$UNIT" = "neuronunit" ]; then
+  docker exec -it "$NAME" bash -c "cd $TEST_HOME/neuronunit; \
+                python -m unittest -b unit_test/${EXTRA}_tests.py"
+  if [ "$EXTRA" = "core" ]; then
+    docker exec -it "$NAME" bash -c "cd $TEST_HOME/neuronunit; \
+                python -m unittest -b unit_test/showcase_tests.py"
+  fi
+fi
+docker rm -f "$NAME" # Stop and remove the running container.  

@@ -1,0 +1,6 @@
+for name in scipy-notebook-plus sciunit neuron-mpi-neuroml neuronunit neuronunit-openworm neuronunit-neuroconstruct neuronunit-optimization; do
+    echo "********************************"
+    echo "Building scidash/$name"
+    echo "********************************"
+    ./build $name
+done

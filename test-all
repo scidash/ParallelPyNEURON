@@ -1,0 +1,6 @@
+for name in scipy-notebook-plus sciunit neuron-mpi-neuroml neuronunit neuronunit-openworm neuronunit-neuroconstruct neuronunit-optimization; do
+    echo "********************************"
+    echo "Testing scidash/$name"
+    echo "********************************"
+    ./test $name $1 # The optional argument could be -dev to use local copies of sciunit and neuronunit
+done
