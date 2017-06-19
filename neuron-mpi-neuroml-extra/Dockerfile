@@ -20,7 +20,6 @@ RUN mpiexec -np 4 nrniv -mpi test5.hoc
 RUN mpiexec -np 4 nrniv -mpi test6.hoc
 RUN mpiexec -np 4 nrniv -mpi test7.hoc
 ADD ./test_fixed.py /home/jovyan/nrn-7.4/src/parallel/
-ADD ./test_fixed2.py /home/jovyan/nrn-7.4/src/parallel/
 
 RUN mpiexec -np 4 nrniv -mpi -python test_fixed.py
 
