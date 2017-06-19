@@ -1,6 +1,6 @@
 FROM scidash/neuron-mpi-neuroml
 
-RUN /opt/conda/bin/ipython3 setup.py install
+#RUN /opt/conda/bin/ipython3 setup.py install
 RUN /opt/conda/bin/ipython -c "from neuron import h"
 RUN /opt/conda/bin/ipython3 -c "from neuron import h"
 
@@ -19,7 +19,7 @@ RUN mpiexec -np 4 nrniv -mpi test4.hoc
 RUN mpiexec -np 4 nrniv -mpi test5.hoc
 RUN mpiexec -np 4 nrniv -mpi test6.hoc
 RUN mpiexec -np 4 nrniv -mpi test7.hoc
-ADD ./test_fixed.py /home/jovyan/nrn-7.4/src/parallel/
+ADD ./test_parallel_hoc.py /home/jovyan/nrn-7.4/src/parallel/
 
 RUN mpiexec -np 4 nrniv -mpi -python test_fixed.py
 
