@@ -1,3 +1,6 @@
-for stack in scipy-notebook-plus neuron-mpi-neuroml neuronunit neuronunit-showcase; do
-    docker push scidash/$stack
+for NAME in scipy-notebook-plus sciunit neuron-mpi-neuroml neuronunit neuronunit-openworm neuronunit-neuroconstruct neuronunit-optimization; do
+    echo "********************************"
+    echo "Pushing scidash/$NAME"
+    echo "********************************"
+    docker push scidash/$NAME
 done
