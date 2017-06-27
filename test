@@ -1,7 +1,7 @@
 NAME=$1 # e.g. "neuronunit-optimization"
-CONTAINER_STATUS=$(docker ps --filter="name=$NAME" -q | xargs) # Is the container running?  
+CONTAINER_STATUS=$(docker ps -a --filter="name=$NAME" -q | xargs) # Is the container running?  
 if [ $CONTAINER_STATUS ]; then # If so...
-  docker rm -f "$NAME" # Stop it and remove it.  
+  docker rm -f $CONTAINER_STATUS # Stop it and remove it.  
 fi
 USER_HOME=/home/jovyan # User home inside the container  
 WORK_HOME=${USER_HOME}/work # Where user work is located  
