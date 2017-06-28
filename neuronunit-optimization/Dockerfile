@@ -33,10 +33,14 @@ RUN easy_install gevent
 RUN easy_install greenlet
 
 WORKDIR $HOME
+RUN ls
+#RUN sudo rm -r $HOME/scoop
 RUN git clone https://github.com/russelljjarvis/scoop.git
-WORKDIR scoop
-RUN python setup.py install
+#RUN git clone https://github.com/russelljjarvis/scoop.git
 
+WORKDIR $HOME/scoop
+RUN python setup.py install
+RUN /opt/conda/bin/python setup.py install
 ##### DEAP ######
 WORKDIR $HOME
 RUN git clone https://github.com/DEAP/deap.git
@@ -61,9 +65,9 @@ RUN sudo /opt/conda/bin/ipcluster nbextension enable
 RUN printenv PATH
 RUN python -c "import pyneuroml"
 RUN python -c "import neuronunit"
-RUN python -c "from neuronunit.models.reduced import ReducedModel"
-RUN conda install quantities
-RUN python -c "import quantities"
+#RUN python -c "from neuronunit.models.reduced import ReducedModel"
+#RUN conda install quantities
+#RUN python -c "import quantities"
 RUN python -c "import neuron"
 RUN python -c "import pyneuroml"
 RUN nrnivmodl
@@ -72,8 +76,8 @@ RUN python -c "import deap"
 RUN nrniv
 
 RUN sudo /opt/conda/bin/pip install sphinx
-RUN sudo git clone https://github.com/russelljjarvis/scoop.git
-RUN sudo /opt/conda/bin/python setup.py install
+#RUN sudo git clone https://github.com/russelljjarvis/scoop.git
+#RUN sudo /opt/conda/bin/python setup.py install
 #RUN export PATH=$PATH
 
 #uncomment the following line to test ipcluster during build.
@@ -81,7 +85,9 @@ RUN sudo /opt/conda/bin/python setup.py install
 #https://github.com/russelljjarvis/neuronunit.git
 WORKDIR $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
-RUN  if [ ! -d "$/home/jovyan/git/neuronunit" ]; then git clone -b dev https://github.com/russelljjarvis/neuronunit.git; fi
+#RUN  if [ ! -d "$/home/jovyan/git/neuronunit" ]; then t; fi
+RUN rm -r neuronunit
+RUN git clone -b russell_dev https://github.com/russelljjarvis/neuronunit.git
 WORKDIR $HOME/neuronunit/neuronunit/tests/NeuroML2
 
 RUN nrnivmodl
@@ -118,6 +124,11 @@ WORKDIR /home/mnt
 
 RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.system('ipcluster start --profile=chase --debug &')"
 # /opt/conda/bin/python3 exhaustive_search.py
-RUN sudo pip install -y NotebookTools
+RUN sudo /opt/conda/bin/pip install NotebookTools
 RUN conda install anaconda-client
-WORKDIR $HOME/git
+#WORKDIR $HOME/git
+WORKDIR $HOME/mnt
+RUN ipython profile create
+RUN sudo chown -R jovyan $HOME
+#RUN ipython notebook --notebook-dir=/home/mnt
+#RUN ipython -c "print(get_config())"
