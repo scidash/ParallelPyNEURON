@@ -65,10 +65,13 @@ RUN sudo /opt/conda/bin/ipcluster nbextension enable
 #Use hack/patch discussed at end of thread until quantities truly becomes compatible with numpy
 #https://www.bountysource.com/issues/46022410-valueerror-ufunc-ufunc-positive-not-supported-by-quantities
 
+RUN sudo rm -r /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
+
 RUN git clone -b "master" git://github.com/python-quantities/python-quantities.git
 WORKDIR python-quantities
-RUN sudo rm -r /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
 RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
+RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities
+
 RUN python -c "import quantities"
 
 RUN printenv PATH
@@ -108,8 +111,8 @@ USER root
 RUN chown -R $NB_USER .
 USER $NB_USER
 
-RUN conda install plotly seaborn
-RUN pip install prospector
+#RUN conda install plotly seaborn
+#RUN pip install prospector
 WORKDIR /home/git/neuronunit
 #RUN python -c "from prospector import run; run.main()"
 #run.main()
@@ -126,16 +129,12 @@ RUN echo "import os">> run_ipp1.p
 
 
 
-RUN echo "backend      : Agg" >> /opt/conda/lib/python3.5/site-packages/matplotlib/mpl-data/matplotlibrc
+#RUN echo "backend      : Agg" >> /opt/conda/lib/python3.5/site-packages/matplotlib/mpl-data/matplotlibrc
 
-WORKDIR /home/mnt
 RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.system('ipcluster start --profile=chase --debug &')"
 # /opt/conda/bin/python3 exhaustive_search.py
-RUN sudo /opt/conda/bin/pip install NotebookTools
-RUN conda install anaconda-client
-#WORKDIR $HOME/git
+#RUN sudo /opt/conda/bin/pip install NotebookTools
+#RUN conda install anaconda-client
 WORKDIR $HOME/mnt
-RUN ipython profile create
+#RUN ipython profile create
 RUN sudo chown -R jovyan $HOME
-#RUN ipython notebook --notebook-dir=/home/mnt
-#RUN ipython -c "print(get_config())"
