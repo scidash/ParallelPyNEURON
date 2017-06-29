@@ -66,11 +66,14 @@ RUN sudo /opt/conda/bin/ipcluster nbextension enable
 #https://www.bountysource.com/issues/46022410-valueerror-ufunc-ufunc-positive-not-supported-by-quantities
 
 RUN sudo rm -r /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
+RUN /opt/conda/bin/pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
+RUN python -c "import quantities as pq"
+RUN python -c "import sciunit.scores"
 
-RUN git clone -b "master" git://github.com/python-quantities/python-quantities.git
-WORKDIR python-quantities
-RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
-RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities
+#RUN git clone -b "master" git://github.com/python-quantities/python-quantities.git
+#WORKDIR python-quantities
+#RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
+#RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities
 
 RUN python -c "import quantities"
 
