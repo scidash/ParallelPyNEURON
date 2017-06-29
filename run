@@ -10,7 +10,7 @@ fi
 WORK_HOME=/home/jovyan/work
 CMD="start-notebook.sh"
 CMD_ARGS="--ip=0.0.0.0 --NotebookApp.token=\"\" --NotebookApp.disable_check_xsrf=True"
-HOST_PORT=8887 # Open port on the host machine.  
+HOST_PORT=8888 # Open port on the host machine.  
 if [ "$2" = "-dev" ]; then
   docker run -it --name="$NAME" \
    -v $SCIDASH_HOME/sciunit:$WORK_HOME/sciunit \

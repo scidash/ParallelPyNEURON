@@ -15,13 +15,13 @@ Purpose: The building of development environments raises an unnecessary technica
 - Execute the run script with the name of the image you want to run. 
 It may first spend some time downloading the image.  
 `./run neuronunit`
-- Go to http://localhost:8887 in your web browser.
+- Go to http://localhost:8888 in your web browser.
 - Create your own notebook that can import and run the tools installed in the container, or
 - Run documentation notebooks in the \*docs folder
 
 ### Optional Steps:
 - Optionally set the environment variable NOTEBOOK_HOME to the directory that you want to be accessible from within the container.  The default is to use your HOME directory.  
-- Optionally change the HOST_PORT in the script from 8887 to some other available port.  
+- Optionally change the HOST_PORT in the script from 8888 to some other available port.  
 - Instead of using the included scripts you can do the usual `docker pull scidash/<image-name>` where `<image-name>` is one of the sub-directories above (e.g. `neuronunit`).  Then do `docker run -it -p 8887:8888 scidash/<image-name>` to launch it.  
 - `./shell <image-name>` to get a shell inside the given container.  
 - Rebuild the whole SciDash stack from source instead just download the pre-compiled image with
