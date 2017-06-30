@@ -19,7 +19,6 @@ RUN chown -R jovyan /opt/conda/lib/python3.5/site-packages/
 
 USER $NB_USER
 RUN pip install --upgrade pip
-RUN pip install -U matplotlib
 RUN pip install IPython \
                 jupyterhub \
                 notebook \

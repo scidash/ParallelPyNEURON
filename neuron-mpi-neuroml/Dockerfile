@@ -16,15 +16,14 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates default-jre 
                        ipython3 python3-docutils \
                        python3-mpi4py cmake ssh
 
-RUN sudo /opt/conda/bin/conda install scipy numpy matplotlib
-
 
 #Do the rest of the build  as user:
 #This will create a more familiar environment to continue developing in.
 #with less of a need to chown and chmod everything done as root at dockerbuild completion
 
 USER jovyan
-WORKDIR /home/jovyan
+# Use numpy 1.12.1 until quantities is compatible with 1.13.
+RUN conda install -y scipy numpy==1.12.1 matplotlib
 RUN sudo chown -R jovyan /home/jovyan
 ENV HOME /home/jovyan
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
@@ -32,7 +31,6 @@ ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 #Test matplotlib
 #RUN python -c "import matplotlib"
 #Install General MPI, such that mpi4py can later bind with it.
-WORKDIR /home/jovyan
 
 WORKDIR $HOME
 RUN \
