@@ -1,0 +1,3 @@
+for stack in scipy-notebook-plus neuron-mpi-neuroml neuronunit neuronunit-showcase; do
+    docker push scidash/$stack
+done
