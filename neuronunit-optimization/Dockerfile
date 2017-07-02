@@ -62,6 +62,10 @@ RUN pip install git+https://github.com/roryk/ipython-cluster-helper
 # Must be done as root to create directories in /usr/local
 RUN sudo /opt/conda/bin/ipcluster nbextension enable
 
+RUN jupyter nbextension install --sys-prefix --py ipyparallel
+RUN jupyter nbextension enable --sys-prefix --py ipyparallel
+RUN jupyter serverextension enable --sys-prefix --py ipyparallel
+
 #Use hack/patch discussed at end of thread until quantities truly becomes compatible with numpy
 #https://www.bountysource.com/issues/46022410-valueerror-ufunc-ufunc-positive-not-supported-by-quantities
 
@@ -89,7 +93,7 @@ RUN python -c "import scoop"
 RUN python -c "import deap"
 RUN nrniv
 
-RUN sudo /opt/conda/bin/pip install sphinx
+#RUN sudo /opt/conda/bin/pip install sphinx
 #RUN sudo git clone https://github.com/russelljjarvis/scoop.git
 #RUN sudo /opt/conda/bin/python setup.py install
 #RUN export PATH=$PATH
