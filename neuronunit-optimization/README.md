@@ -1,4 +1,5 @@
 
+Ipython Parallel seems to benefit from tini
 
 https://github.com/krallin/tini
 
