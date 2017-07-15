@@ -14,8 +14,8 @@ RUN apt-get install -y gvfs-bin libxss1 python3-setuptools
 RUN apt-get install -y python-tk curl apt-utils
 
 
-RUN chown -R jovyan $HOME
-RUN chown -R jovyan /opt/conda/lib/python3.5/site-packages/
+#RUN sudo chown -R jovyan $HOME
+#RUN sudo chown -R jovyan /opt/conda/lib/python3.5/site-packages/
 
 USER $NB_USER
 RUN pip install --upgrade pip
@@ -25,7 +25,11 @@ RUN pip install IPython \
                 notebook \
                 ipykernel \
                 ipyparallel \
-                enum34
+                enum34 \
+		bqplot \ 
+		numba
+
+#numba is for optimized code, bqplot is for interactive plotting.
 RUN conda install mpi4py
 ##### Scoop #####
 
@@ -53,6 +57,12 @@ RUN git clone https://github.com/russelljjarvis/BluePyOpt.git
 WORKDIR BluePyOpt
 RUN python setup.py install
 RUN python -c "import bluepyopt"
+
+##### Replace PyNeuroML ##########
+WORKDIR $HOME
+RUN git clone https://github.com/NeuroML/pyNeuroML.git
+RUN pyneuroml
+RUN python setup.py install
 
 ##### IPython Cluster #####
 USER $NB_USER
@@ -113,8 +123,14 @@ RUN ls LEMS_2007One.xml
 WORKDIR $HOME/neuronunit/neuronunit/tests/
 RUN ls *.pickle
 
-WORKDIR /home/git
-USER root
+#WORKDIR /home/git
+#USER root
+#ENV TINI_VERSION v0.15.0
+#ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+#RUN chmod +x /tini
+
+RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
+
 RUN chown -R $NB_USER .
 USER $NB_USER
 
@@ -128,7 +144,7 @@ RUN sudo chown -R jovyan .
 
 RUN echo "import os">> run_ipp1.p
 
-#RUN echo "os.system('ipcluster start --profile=chase --debug &')" >> run_ipp1.py
+#RUN echo "os.system('ipcluster start --profile=default')" >> run_ipp1.py
 #RUN echo "import ipyparallel as ipp ; rc = ipp.Client(profile='chase'); print('hello from before cpu '); print(rc.ids);" >> run_ipp2.py
 #RUN ipython run_ipp1.py && sleep 15 && ipython run_ipp2.py
 #RUN /opt/conda/bin/ipython3 -c "import sys; print(sys.path)"
@@ -145,3 +161,6 @@ RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.sy
 WORKDIR $HOME/mnt
 #RUN ipython profile create
 RUN sudo chown -R jovyan $HOME
+# Add Tini
+
+
