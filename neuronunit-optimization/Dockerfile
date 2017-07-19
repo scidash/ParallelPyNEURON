@@ -118,15 +118,9 @@ RUN nrniv
 #https://github.com/russelljjarvis/neuronunit.git
 WORKDIR $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
-#RUN  if [ ! -d "$/home/jovyan/git/neuronunit" ]; then t; fi
-
-RUN git clone -b russell_dev https://github.com/russelljjarvis/neuronunit.git
-WORKDIR $HOME/neuronunit/neuronunit/tests/NeuroML2
 
 RUN nrnivmodl
-RUN ls LEMS_2007One.xml
 WORKDIR $HOME/neuronunit/neuronunit/tests/
-RUN ls *.pickle
 
 RUN  pip install --upgrade neo
 
