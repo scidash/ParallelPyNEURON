@@ -112,7 +112,7 @@ RUN nrnivmodl
 RUN ls LEMS_2007One.xml
 WORKDIR $HOME/neuronunit/neuronunit/tests/
 RUN ls *.pickle
-
+RUN conda install python-graphviz graphviz
 WORKDIR /home/git
 USER root
 RUN chown -R $NB_USER .
@@ -123,6 +123,7 @@ USER $NB_USER
 WORKDIR /home/git/neuronunit
 #RUN python -c "from prospector import run; run.main()"
 #run.main()
+
 
 RUN sudo chown -R jovyan .
 
