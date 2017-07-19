@@ -119,7 +119,7 @@ RUN nrniv
 WORKDIR $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
 #RUN  if [ ! -d "$/home/jovyan/git/neuronunit" ]; then t; fi
-RUN rm -r neuronunit
+
 RUN git clone -b russell_dev https://github.com/russelljjarvis/neuronunit.git
 WORKDIR $HOME/neuronunit/neuronunit/tests/NeuroML2
 

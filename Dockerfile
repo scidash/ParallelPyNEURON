@@ -17,6 +17,9 @@ RUN apt-get update; apt-get install -y automake libtool git vim  \
                        ipython3 python3-docutils python3-yaml \
                        python3-venv python3-mpi4py python3-tables cmake ssh
 
+
+
+    
 #The following code is adapted from:
 #https://github.com/ContinuumIO/docker-images/blob/master/anaconda/Dockerfile
 
