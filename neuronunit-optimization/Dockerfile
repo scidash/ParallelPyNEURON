@@ -61,8 +61,14 @@ RUN python -c "import bluepyopt"
 ##### Replace PyNeuroML ##########
 WORKDIR $HOME
 RUN git clone https://github.com/NeuroML/pyNeuroML.git
-RUN pyneuroml
-RUN python setup.py install
+RUN pwd
+RUN ls -ltr *
+WORKDIR pyNeuroML
+#WORKDIR pyneuroml
+#WORKDIR $HOME/PyNeuroML
+RUN ls *.py
+RUN ls setup.py
+RUN sudo /opt/conda/bin/python setup.py install
 
 ##### IPython Cluster #####
 USER $NB_USER
@@ -90,7 +96,6 @@ RUN python -c "import sciunit.scores"
 #RUN sudo ln -s quantities /opt/conda/lib/python3.5/site-packages/quantities
 
 RUN python -c "import quantities"
-
 RUN printenv PATH
 RUN python -c "import pyneuroml"
 RUN python -c "import neuronunit"
@@ -123,44 +128,22 @@ RUN ls LEMS_2007One.xml
 WORKDIR $HOME/neuronunit/neuronunit/tests/
 RUN ls *.pickle
 
-#WORKDIR /home/git
-#USER root
-#ENV TINI_VERSION v0.15.0
-#ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-#RUN chmod +x /tini
+RUN  pip install --upgrade neo
 
 RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
+RUN conda install python-graphviz graphviz
 
 RUN chown -R $NB_USER .
 USER $NB_USER
 
-#RUN conda install plotly seaborn
-#RUN pip install prospector
 WORKDIR /home/git/neuronunit
-#RUN python -c "from prospector import run; run.main()"
-#run.main()
 
 RUN sudo chown -R jovyan .
 
 RUN echo "import os">> run_ipp1.p
 
-#RUN echo "os.system('ipcluster start --profile=default')" >> run_ipp1.py
-#RUN echo "import ipyparallel as ipp ; rc = ipp.Client(profile='chase'); print('hello from before cpu '); print(rc.ids);" >> run_ipp2.py
-#RUN ipython run_ipp1.py && sleep 15 && ipython run_ipp2.py
-#RUN /opt/conda/bin/ipython3 -c "import sys; print(sys.path)"
-#RUN /opt/conda/bin/ipython3 -c "import os; print(sys.path)"
-
-
-
-#RUN echo "backend      : Agg" >> /opt/conda/lib/python3.5/site-packages/matplotlib/mpl-data/matplotlibrc
-
 RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.system('ipcluster start --profile=chase --debug &')"
-# /opt/conda/bin/python3 exhaustive_search.py
-#RUN sudo /opt/conda/bin/pip install NotebookTools
-#RUN conda install anaconda-client
 WORKDIR $HOME/mnt
-#RUN ipython profile create
 RUN sudo chown -R jovyan $HOME
-# Add Tini
 
 
