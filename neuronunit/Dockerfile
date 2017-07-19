@@ -19,7 +19,8 @@ RUN mkdir -p neuronunit
 RUN tar -xvzf neuronunit.tar.gz -C neuronunit --strip-components=1
 RUN rm neuronunit.tar.gz
 WORKDIR neuronunit
-RUN python setup.py install
+RUN pip install --process-dependency-links -e .
+# RUN python setup.py install
 
 WORKDIR $WORK_HOME
 # Put the optional local working copy (not the one we just cloned)

@@ -13,7 +13,7 @@ RUN mkdir -p sciunit
 RUN tar -xvzf sciunit.tar.gz -C sciunit --strip-components=1
 RUN rm sciunit.tar.gz
 WORKDIR sciunit
-RUN python setup.py install
+RUN pip install --process-dependency-links -e .
 WORKDIR $WORK_HOME
 # Put the optional local working copy (not the one we just cloned)
 # on the working path.  
