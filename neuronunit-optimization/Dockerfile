@@ -124,8 +124,6 @@ WORKDIR $HOME/neuronunit/neuronunit/tests/
 
 RUN  pip install --upgrade neo
 
-RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
-RUN conda install python-graphviz graphviz
 
 RUN chown -R $NB_USER .
 USER $NB_USER
@@ -141,3 +139,17 @@ WORKDIR $HOME/mnt
 RUN sudo chown -R jovyan $HOME
 
 
+
+RUN sudo apt-get update
+RUN sudo apt-get install -qq gdebi wget libgd2-xpm-dev make
+RUN sudo wget -O $HOME/graphviz-2.38.0.deb http://www.graphviz.org/pub/graphviz/stable/ubuntu/ub12.04/x86_64/graphviz_2.38.0-1~precise_amd64.deb
+RUN sudo wget -O $HOME/libgraphviz4.deb \
+        http://www.graphviz.org/pub/graphviz/stable/ubuntu/ub12.04/x86_64/libgraphviz4_2.38.0-1~precise_amd64.deb
+# RUN apt-get remove libcdt4 libpathplan4 libxdot4
+# RUN sudo wget -O libgd-xpm.deb http://security.ubuntu.com/ubuntu/pool/main/libg/libgd2/libgd2-xpm_2.0.36~rc1~dfsg-6ubuntu2.1_amd64.deb
+# RUN sudo dpkg -i libgd-xpm.deb && apt-get install -f
+# RUN sudo yes | gdebi $HOME/libgraphviz4.deb
+# RUN sudo yes | gdebi $HOME/graphviz-2.38.0.deb
+RUN sudo /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
+RUN conda install python-graphviz graphviz
+RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
