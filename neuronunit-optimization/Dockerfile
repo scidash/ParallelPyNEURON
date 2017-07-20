@@ -140,4 +140,7 @@ RUN sudo chown -R jovyan $HOME
 
 RUN conda install python-graphviz graphviz
 RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
-RUN conda install plotly igraph
+RUN conda install plotly python-igraph
+# Note igraph as distinguished from python-igraph is actually jgraph, something else entirely
+RUN sudo apt-get install python-dev graphviz libgraphviz-dev pkg-config
+RUN pip install git+https://github.com/pygraphviz/pygraphviz.git
