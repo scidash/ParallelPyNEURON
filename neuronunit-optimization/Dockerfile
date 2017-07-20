@@ -153,4 +153,7 @@ RUN sudo wget -O $HOME/libgraphviz4.deb \
 RUN sudo /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
 RUN conda install python-graphviz graphviz
 RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
-RUN conda install plotly igraph
+RUN conda install plotly python-igraph
+# Note igraph as distinguished from python-igraph is actually jgraph, something else entirely
+RUN sudo apt-get install python-dev graphviz libgraphviz-dev pkg-config
+RUN pip install git+https://github.com/pygraphviz/pygraphviz.git
