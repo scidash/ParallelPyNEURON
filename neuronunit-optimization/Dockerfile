@@ -29,7 +29,7 @@ RUN pip install IPython \
                 ipykernel \
                 ipyparallel \
                 enum34 \
-		bqplot \ 
+		bqplot \
 		numba
 
 #numba is for optimized code, bqplot is for interactive plotting.
@@ -137,10 +137,8 @@ RUN sudo chown -R jovyan $HOME
 
 
 
-
-RUN conda install python-graphviz graphviz
-RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
-RUN conda install plotly python-igraph
+# RUN conda install python-graphviz graphviz
 # Note igraph as distinguished from python-igraph is actually jgraph, something else entirely
-RUN sudo apt-get install python-dev graphviz libgraphviz-dev pkg-config
+RUN sudo apt-get install -y python-dev graphviz libgraphviz-dev pkg-config
 RUN pip install git+https://github.com/pygraphviz/pygraphviz.git
+RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
