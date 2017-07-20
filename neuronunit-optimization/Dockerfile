@@ -8,7 +8,7 @@ FROM scidash/neuronunit
 # Showcase for model optimization using NeuronUnit.
 #################
 USER root
-RUN apt-get install apt-transport-https
+
 
 
 
@@ -114,9 +114,8 @@ WORKDIR $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
 
 RUN nrnivmodl
-
 WORKDIR $HOME/neuronunit/neuronunit/tests/
-
+RUN sudo /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
 RUN  pip install --upgrade neo
 
 RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
@@ -126,15 +125,19 @@ USER root
 RUN chown -R $NB_USER .
 USER $NB_USER
 
+WORKDIR /home/git/neuronunit
 
 RUN sudo chown -R jovyan .
 
 RUN echo "import os">> run_ipp1.p
 
 RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.system('ipcluster start --profile=chase --debug &')"
-
 WORKDIR $HOME/mnt
-
 RUN sudo chown -R jovyan $HOME
 
 
+
+
+RUN conda install python-graphviz graphviz
+RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
+RUN conda install plotly igraph
