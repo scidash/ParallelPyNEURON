@@ -7,6 +7,8 @@ FROM scidash/scipy-notebook-plus
 # HEAD, which will ensure that if the HEAD has changed (i.e. new commits), 
 # then a new tar of the repo will be downloaded.  
 ARG HEAD=1
+RUN sudo apt-get install -y apt-transport-https
+
 WORKDIR $HOME
 RUN wget http://github.com/scidash/sciunit/tarball/dev -O sciunit.tar.gz
 RUN mkdir -p sciunit

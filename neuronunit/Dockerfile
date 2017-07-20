@@ -8,13 +8,12 @@ FROM scidash/neuron-mpi-neuroml
 # then a new tar of the repo will be downloaded.  
 ARG HEAD=1
 WORKDIR $HOME
-RUN wget http://github.com/scidash/neuronunit/tarball/dev -O neuronunit.tar.gz
-RUN mkdir -p neuronunit
-RUN tar -xvzf neuronunit.tar.gz -C neuronunit --strip-components=1
+RUN git clone -b dev https://github.com/scidash/neuronunit.git
 WORKDIR neuronunit
-RUN python setup.py install
-WORKDIR $WORK_HOME
+RUN sudo /opt/conda/bin/python setup.py install
+WORKDIR $WORK_DIR
 # Put the optional local working copy (not the one we just cloned)
 # on the working path.  
 ENV PYTHONPATH $WORK_HOME/sciunit:$PYTHONPATH
 ENV PYTHONPATH $WORK_HOME/neuronunit:$PYTHONPATH
+
