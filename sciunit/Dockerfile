@@ -7,6 +7,7 @@ FROM scidash/scipy-notebook-plus
 # HEAD, which will ensure that if the HEAD has changed (i.e. new commits), 
 # then a new tar of the repo will be downloaded.  
 ARG HEAD=1
+RUN sudo apt-get update
 RUN sudo apt-get install -y apt-transport-https
 
 WORKDIR $HOME
