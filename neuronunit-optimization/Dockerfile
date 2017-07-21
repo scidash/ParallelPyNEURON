@@ -64,14 +64,11 @@ RUN python -c "import bluepyopt"
 ##### Replace PyNeuroML ##########
 WORKDIR $HOME
 RUN git clone https://github.com/NeuroML/pyNeuroML.git
-RUN pwd
-RUN ls -ltr *
 WORKDIR pyNeuroML
-#WORKDIR pyneuroml
-#WORKDIR $HOME/PyNeuroML
 RUN ls *.py
 RUN ls setup.py
-RUN sudo /opt/conda/bin/python setup.py install
+RUN pip install --process-dependency-links -e .
+#RUN sudo /opt/conda/bin/python setup.py install
 
 ##### IPython Cluster #####
 USER $NB_USER
