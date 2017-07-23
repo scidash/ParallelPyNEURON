@@ -9,6 +9,9 @@ FROM scidash/neuronunit
 #################
 USER root
 
+
+
+
 RUN apt-get update
 RUN apt-get install -y gvfs-bin libxss1 python3-setuptools
 RUN apt-get install -y python-tk curl apt-utils
@@ -26,7 +29,7 @@ RUN pip install IPython \
                 ipykernel \
                 ipyparallel \
                 enum34 \
-		bqplot \ 
+		bqplot \
 		numba
 
 #numba is for optimized code, bqplot is for interactive plotting.
@@ -61,14 +64,11 @@ RUN python -c "import bluepyopt"
 ##### Replace PyNeuroML ##########
 WORKDIR $HOME
 RUN git clone https://github.com/NeuroML/pyNeuroML.git
-RUN pwd
-RUN ls -ltr *
 WORKDIR pyNeuroML
-#WORKDIR pyneuroml
-#WORKDIR $HOME/PyNeuroML
 RUN ls *.py
 RUN ls setup.py
-RUN sudo /opt/conda/bin/python setup.py install
+RUN pip install --process-dependency-links -e .
+#RUN sudo /opt/conda/bin/python setup.py install
 
 ##### IPython Cluster #####
 USER $NB_USER
@@ -109,24 +109,18 @@ RUN nrnivmodl
 RUN python -c "import scoop"
 RUN python -c "import deap"
 RUN nrniv
-
-#RUN sudo /opt/conda/bin/pip install sphinx
-#RUN sudo git clone https://github.com/russelljjarvis/scoop.git
-#RUN sudo /opt/conda/bin/python setup.py install
-#RUN export PATH=$PATH
-
-#uncomment the following line to test ipcluster during build.
-#RUN ipcluster start --profile=chase --debug &
-#https://github.com/russelljjarvis/neuronunit.git
 WORKDIR $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
 
 RUN nrnivmodl
 WORKDIR $HOME/neuronunit/neuronunit/tests/
-
+RUN sudo /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
 RUN  pip install --upgrade neo
 
-
+RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
+RUN conda install python-graphviz graphviz
+WORKDIR /home/git
+USER root
 RUN chown -R $NB_USER .
 USER $NB_USER
 
@@ -142,20 +136,8 @@ RUN sudo chown -R jovyan $HOME
 
 
 
-RUN sudo apt-get update
-RUN sudo apt-get install -qq gdebi wget libgd2-xpm-dev make
-RUN sudo wget -O $HOME/graphviz-2.38.0.deb http://www.graphviz.org/pub/graphviz/stable/ubuntu/ub12.04/x86_64/graphviz_2.38.0-1~precise_amd64.deb
-RUN sudo wget -O $HOME/libgraphviz4.deb \
-        http://www.graphviz.org/pub/graphviz/stable/ubuntu/ub12.04/x86_64/libgraphviz4_2.38.0-1~precise_amd64.deb
-# RUN apt-get remove libcdt4 libpathplan4 libxdot4
-# RUN sudo wget -O libgd-xpm.deb http://security.ubuntu.com/ubuntu/pool/main/libg/libgd2/libgd2-xpm_2.0.36~rc1~dfsg-6ubuntu2.1_amd64.deb
-# RUN sudo dpkg -i libgd-xpm.deb && apt-get install -f
-# RUN sudo yes | gdebi $HOME/libgraphviz4.deb
-# RUN sudo yes | gdebi $HOME/graphviz-2.38.0.deb
-RUN sudo /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
-RUN conda install python-graphviz graphviz
-RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
-RUN conda install plotly python-igraph
+# RUN conda install python-graphviz graphviz
 # Note igraph as distinguished from python-igraph is actually jgraph, something else entirely
-RUN sudo apt-get install python-dev graphviz libgraphviz-dev pkg-config
+RUN sudo apt-get install -y python-dev graphviz libgraphviz-dev pkg-config
 RUN pip install git+https://github.com/pygraphviz/pygraphviz.git
+RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
