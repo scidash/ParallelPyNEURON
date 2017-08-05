@@ -1,6 +1,4 @@
-# author Russell Jarvis rjjarvis@asu.edu
-# author Rick Gerkin rgerkin@asu.edu
-# neuronunit-showcase
+
 
 FROM scidash/neuronunit-optimization
 RUN git clone -b dev https://github.com/russelljjarvis/informatics_poster.git
