@@ -3,13 +3,9 @@
 # neuronunit-showcase
 
 FROM scidash/neuronunit-optimization
-RUN echo "get it again 1"
 RUN git clone -b dev https://github.com/russelljjarvis/informatics_poster.git
 WORKDIR informatics_poster/neuronunit/optimization
-#~/mnt/new/informatics_poster/neuronunit/optimization
 
-#RUN ipython -i -c "import os;os.system('ipcluster start -n 8 --profile=default &');import nsga_parallel_no_vm"
 ENTRYPOINT ipython -i -c "import os,time;os.system('ipcluster start -n 8 --profile=default &');time.sleep(10);import nsga_parallel_no_vm"
 
-#ipython -i nsga_parallel_no_vm.py 
 
