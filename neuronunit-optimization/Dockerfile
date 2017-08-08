@@ -69,6 +69,8 @@ RUN pip install git+https://github.com/roryk/ipython-cluster-helper
 # Must be done as root to create directories in /usr/local
 RUN sudo /opt/conda/bin/ipcluster nbextension enable
 
+RUN sudo /opt/conda/bin/pip install git+https://github.com/russelljjarvis/gprof2dot.git
+
 RUN jupyter nbextension install --sys-prefix --py ipyparallel
 RUN jupyter nbextension enable --sys-prefix --py ipyparallel
 RUN jupyter serverextension enable --sys-prefix --py ipyparallel
