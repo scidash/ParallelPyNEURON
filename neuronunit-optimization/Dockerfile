@@ -131,7 +131,7 @@ RUN sudo apt-get install -y python-dev graphviz libgraphviz-dev pkg-config
 RUN sudo /opt/conda/bin/pip install git+https://github.com/pygraphviz/pygraphviz.git
 RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
 
-RUN sudo /opt/conda/bin/pip install plotly
+RUN sudo /opt/conda/bin/pip install plotly cufflinks
 
 WORKDIR $HOME
 RUN python -c "import sciunit"
