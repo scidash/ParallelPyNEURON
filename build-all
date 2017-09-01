@@ -1,4 +1,4 @@
-for stack in scipy-notebook-plus sciunit neuron-mpi-neuroml neuronunit neuronunit-showcase; do
+for stack in scipy-notebook-plus sciunit neuron-mpi-neuroml neuronunit neuronunit-optimization autoload; do
     if [[ $stack == *unit ]]; then
 	# If the value of HEAD has changed, meaning there have been new commits to the dev branch, 
 	# the build will be sure to download a new tar of the repo.  Otherwise, it will use the cached version

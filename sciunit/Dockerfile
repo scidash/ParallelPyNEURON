@@ -11,10 +11,13 @@ USER $NB_USER
 # HEAD, which will ensure that if the HEAD has changed (i.e. new commits), 
 # then a new tar of the repo will be downloaded.  
 ARG HEAD=1
+#RUN pip install git+https://github.com/NeuroML/pyNeuroML --process-dependency-links
+#RUN pip install git+https://github.com/AllenInstitute/AllenSDK@py34_rgerkin --process-dependency-links
+
 RUN wget http://github.com/scidash/sciunit/tarball/dev -O sciunit.tar.gz
 RUN mkdir -p sciunit
 RUN tar -xvzf sciunit.tar.gz -C sciunit --strip-components=1
 WORKDIR sciunit
-RUN python setup.py install
+RUN python setup.py install --process-dependency-links -e
 RUN python test_all.py
 WORKDIR $HOME/$WORKDIR
