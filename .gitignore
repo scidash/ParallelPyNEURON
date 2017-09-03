@@ -5,5 +5,6 @@ PyNeuronToolbox/*.pyc
 Dockerfile.orig 
 geo5038804.hoc 	
 LICENSE
-index.ipynb 	
+test.ipynb 	
+Untitled.ipynb
 setup.py 	

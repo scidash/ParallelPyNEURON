@@ -1,94 +1,79 @@
+# A hierarchy of Docker images for using SciDash tools
 
+Purpose: The building of development environments raises an unnecessary technical problem. In many cases even if someone has the technical capacity to build, it does not mean they will have time to do so. In order to remove this barrier to participation we have created some Docker images to allow people to use our tools. Each of these images serves Jupyter notebooks and including a Python scientific computing stack (extended from jupyter/docker-stacks/scipy-notebook), and some combination of NEURON-7.4, scoop, DEAP, sciunit, and neuronunit.
 
-### A hierarchy of Docker images with Jupyter notebooks, a typical Python scientific computing stack, NEURON-7.4, scoop, DEAP, sciunit, and neuronunit.
+![Docker container hierarchy](https://github.com/scidash/assets/blob/master/mockups/Containerization%20and%20Continuous%20Integration%20Workflow.png)
 
-## Support for graphical development ipython notebook.
-
-Docker image internal support for graphical browser (`iceweasel`), graphical git merge (`meld`), and code editor (`atom` and `gedit`). 
-
-## For an Ubuntu host:
-This works very easily.
-launching: 
-I have defined the alias in my `~/.bashrc`:
-`drh` (Docker Run Here):
-
-```
-alias drh=' sudo docker run -it -e DISPLAY=$DISPLAY -v `pwd`:/home/mnt \
-                                                    -v /tmp/.X11-unix:/tmp/.X11-unix \
-                                                    deapscoop1 /bin/bash'
-```
-The alias probably should instead be function that is able to accept arguments also.
-
-## For an Apple/MAC host
-
-OSX doesn't have a default x11 server so you must install quartz.
-
-https://fredrikaverpil.github.io/2016/07/31/docker-for-mac-and-gui-applications/
-
-This works because you are mounting the volume associated with your hosts.X11 server binary,  and passing in your hosts environmental variable. I anticipate a future when the drh command will become very long.
-
-The next step is to build this outside of and on-top of docker-stacks images using docker-compose, and also getting docker compose to fill out my github credentials.
-
-Purpose: The building of development environments raises an unnecessary technical problem. In many cases even if someone has the technical capacity to build, it does not mean they will have time too. In order to remove this barrier to participation we have attempted to create some useful docker images. 
+# Instructions
 
 ## 1
-Get docker 
+[Download and install Docker](https://www.docker.com/community-edition#/download)
 
 ## 2 
-In accordance with the philosophy stated above don't build the docker image from source instead just download the pre-compiled image with
-`docker pull scidash/<image-name>`
+- Clone or download this repository:
+`git clone https://github.com/scidash/docker-stacks`
+- Execute the run script with the name of the image you want to run. 
+It may first spend some time downloading the image.  
+`./run neuronunit`
+- Go to http://localhost:8888 in your web browser.
+- Create your own notebook that can import and run the tools installed in the container, or
+- Run documentation notebooks in the \*docs folder
 
-where `<image-name>` is one of the sub-directories above (e.g. `neuron-mpi-neuroml`)
+### Optional Steps:
+- Optionally set the environment variable NOTEBOOK_HOME to the directory that you want to be accessible from within the container.  The default is to use your HOME directory.  
+- Optionally change the HOST_PORT in the script from 8888 to some other available port.  
+- Instead of using the included scripts you can do the usual `docker pull scidash/<image-name>` where `<image-name>` is one of the sub-directories above (e.g. `neuronunit`).  Then do `docker run -it -p 8887:8888 scidash/<image-name>` to launch it.  
+- `./shell <image-name>` to get a shell inside the given container.  
+- Rebuild the whole SciDash stack from source instead just download the pre-compiled image with
+`./build-all` or build just one image with:
+`./build <image-name>`. This is similar to the usual `docker build` command except that it checks GitHub to see if a newer version of the corresponding SciDash repository is available, and downloads that code, before building the image.  
+- Optionally set the environment variable SCIDASH_HOME to the location of your sciunit and neuronunit working copies, which will be mounted in the container to override the installed versions when the `-dev` flag is passed to `run` or `shell`.
+- The docker image is able to use the same number of CPUs available on the host system see below, so dont' forget to [change your Docker settings](http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system) if you want to use the maximum number of CPUs or more memory inside the container.
 
-Run step 3 to confirm the presence of the image, and step 4 to enter the docker container.
+### Want to run JupyterHub with one of these images?  
+```
+sudo apt-get install npm nodejs-legacy
+npm install -g configurable-http-proxy
+pip install jupyterhub
+pip install -U notebook
+jupyterhub --generate-config
+```
+Then put something like this in your `jupyterhub-config.py` file and follow the instructions in the comments, then run `jupyterhub` from the host.  More is required if you want SSL, GitHub authentication, etc.:  
+```python
+import os
+import platform
+import netifaces
 
-## 2 (The long way):
-Assuming you have git, after running git clone navigate to the directory containing this file and run
+# Install the proxy first:
+# npm install -g configurable-http-proxy
+# If NPM is not working on your Mac, try this:  
+# https://gist.github.com/DanHerbert/9520689
 
-`sudo docker build -t <image-name> .`
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
-This tells docker to build an image based on the contents of the file labelled Dockerfile located in the present working directory. The image that is output from this process is not actually output to this directory. The image is accessible in any directory visible to the shell in an instance of the docker daemon.
+# You need to open up a port on the host that a Docker container can access:
+# sudo ifconfig lo0 alias 10.200.11.1/24
+if platform.system == 'Darwin':
+    lo0 = netifaces.ifaddresses('lo0')
+    try:
+        docker0_ipv4 = lo0[netifaces.AF_INET][1]
+    except IndexError:
+        raise Exception(("OSX hosts must add an additional IP to the loopback interface that the Docker container can access, "
+                         "e.g. 'sudo ifconfig lo0 alias 10.200.10.1/24'"))
+else:
+    docker0 = netifaces.ifaddresses('docker0')
+    docker0_ipv4 = lo0[netifaces.AF_INET][0]
+ip = docker0_ipv4['addr']
 
-## 3
-To confirm build made an image:
+c.JupyterHub.ip = ip
+c.JupyterHub.hub_ip = ip
 
-`docker images`
-
-## 4
-To enter the built image try interactively inorder to do neurounit development inside the image use:
-
-`docker run -it <image-name> bash`
-
-## 5
-To throw commands at the docker image without actually entering it use syntactic pattern like:
-
-`docker run neuronunit-scoop-deap python -c "import neuron; import neuronunit; import sciunit"`
-
-`docker run neuronunit-scoop-deap nproc`
-
-### The docker image is able to use the same number of CPUs available on the host system see below:
-#### http://stackoverflow.com/questions/20123823/how-does-docker-use-cpu-cores-from-its-host-operating-system
-
-### To mount a directory containing development files inside the docker container using OSX as the base system use:
-`docker run -v /Users/<path>:/<container path> ...`
-##### Reference: https://docs.docker.com/engine/tutorials/dockervolumes/
-
-### To interact with your Jupyter noteboks through these images, do:
-`docker run -d -p 8888:8888 -v /path/to/my/notebooks:/Users/jovyan/work/notebooks`
-### and then go to localhost:8888 in your web browser.
-
-### To mount a host file system, and then to develop interactively inside the image:
-
-```docker run -it -p 8888:8888 -v `pwd`:/home/jovyan/work/scipyopt <image_name> bash```
-
-Note: Jovyan is a reference to the Greek God Jupyter, however its also an arbitary choice of name for the user space on the docker filesystem. 
-
-# 6
-The hierarchy of docker images here is:  
-#### neuronunit-scoop-deap
-###### depends on
-#### neuron-mpi-neuroml
-###### depends on
-#### scipy-notebook-plus
-###### depends on
-#### jupyter/scipy-notebook (http://github.com/jupyter/docker-stacks)
+# If you make changes an restart the server, you might want to kill 
+# the Docker container so that it starts a new one instead of using the old one:
+# docker rm -f $(docker ps -a -q) # Careful, this kills all the containers. 
+c.DockerSpawner.container_image = 'scidash/neuronunit-showcase'
+c.DockerSpawner.extra_create_kwargs.update({
+    'command': '/usr/local/bin/start-singleuser.sh'
+})
+```
+Then run `jupyterhub`, visit the indicated URL (e.g. `10.200.11.1:8000`) in your browser, and log in as a system user.  

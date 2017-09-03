@@ -1,0 +1,11 @@
+WORK_HOME=/home/jovyan/work
+ENTRYPOINT=/bin/bash
+if [ "$2" = "-dev" ]; then
+  docker run -it --entrypoint=$ENTRYPOINT \
+   -v $SCIDASH_HOME/sciunit:$WORK_HOME/sciunit \
+   -v $SCIDASH_HOME/neuronunit:$WORK_HOME/neuronunit \
+   scidash/$1
+else
+  docker run -it --entrypoint=$ENTRYPOINT scidash/$1
+fi
+
