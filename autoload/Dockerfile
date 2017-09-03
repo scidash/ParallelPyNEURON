@@ -25,4 +25,4 @@ RUN echo "alias rec='/bin/bash recovery.sh'"
 #ENTRYPOINT ipcluster start -n 8 --profile=default & sleep 2 &
 
 #ENTRYPOINT /bin/bash start.sh
-WORDIR $HOME
+WORKDIR $HOME
