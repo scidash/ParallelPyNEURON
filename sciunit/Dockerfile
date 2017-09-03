@@ -15,9 +15,18 @@ ARG HEAD=1
 #RUN pip install git+https://github.com/AllenInstitute/AllenSDK@py34_rgerkin --process-dependency-links
 
 RUN wget http://github.com/scidash/sciunit/tarball/dev -O sciunit.tar.gz
-RUN mkdir -p sciunit
-RUN tar -xvzf sciunit.tar.gz -C sciunit --strip-components=1
+#RUN mkdir -p sciunit
+#RUN tar -xvzf sciunit.tar.gz -C sciunit --strip-components=1
+#RUN pip install --process-dependency-links -e sciunit.tar.gz
+
+RUN git clone -b dev http://github.com/scidash/sciunit.git
+
 WORKDIR sciunit
-RUN python setup.py install --process-dependency-links -e
+RUN ls
+RUN python setup.py install
+#RUN pip install -e git+http://github.com/scidash/sciunit.git@dev
+
+#RUN /opt/conda/bin/pip setup.py install --process-dependency-links -e
+
 RUN python test_all.py
 WORKDIR $HOME/$WORKDIR
