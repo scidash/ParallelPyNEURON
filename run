@@ -1,22 +1,11 @@
-#!/bin/bash
-NAME=$1
-if ! [ $NOTEBOOK_HOME ]; then
-    NOTEBOOK_HOME=$HOME
-fi
 WORK_HOME=/home/jovyan/work
-ENTRYPOINT=jupyter-notebook
-ENTRYPOINT_ARGS="--ip=0.0.0.0 --NotebookApp.token=\"\" --NotebookApp.disable_check_xsrf=True"
-HOST_PORT=8887 # Open port on the host machine.  
+ENTRYPOINT=/bin/bash
 if [ "$2" = "-dev" ]; then
   docker run -it --entrypoint=$ENTRYPOINT \
    -v $SCIDASH_HOME/sciunit:$WORK_HOME/sciunit \
    -v $SCIDASH_HOME/neuronunit:$WORK_HOME/neuronunit \
-   -p $HOST_PORT:8888 -v $NOTEBOOK_HOME:$WORK_HOME \
-   scidash/$NAME $ENTRYPOINT_ARGS
+   scidash/$1
 else
-  docker run -it --entrypoint=$ENTRYPOINT \
-  -p $HOST_PORT:8888 -v $NOTEBOOK_HOME:$WORK_HOME \
-  scidash/$NAME $ENTRYPOINT_ARGS
+  docker run -it --entrypoint=$ENTRYPOINT scidash/$1
 fi
 
-# Now access the notebook server at http://localhost:$HOST_PORT
