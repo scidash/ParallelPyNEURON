@@ -28,12 +28,12 @@ RUN pip install IPython \
                 notebook \
                 ipykernel \
                 ipyparallel \
-                enum34 \
-		bqplot \
-		numba
+                enum34 
+
+RUN pip install bqplot numba 
 
 #numba is for optimized code, bqplot is for interactive plotting.
-RUN conda install mpi4py
+#RUN conda install mpi4py
 ##### Scoop #####
 
 RUN easy_install gevent
@@ -45,12 +45,20 @@ RUN git clone https://github.com/DEAP/deap.git
 WORKDIR deap
 RUN python setup.py install
 
+RUN apt-get update && \
+    apt-get -y install gcc
+RUN apt-get autoremove
+RUN apt-get upgrade
+RUN sudo apt-get -y install python-dev
 ##### BluePyOpt ######
-WORKDIR $HOME
-RUN git clone https://github.com/russelljjarvis/BluePyOpt.git
-WORKDIR BluePyOpt
-RUN python setup.py install
-RUN python -c "import bluepyopt"
+#WORKDIR $HOME
+#RUN git clone https://github.com/russelljjarvis/BluePyOpt.git
+#WORKDIR BluePyOpt
+#RUN python setup.py install
+#RUN python -c "import bluepyopt"
+
+
+RUN /opt/conda/bin/pip install mpi4py
 
 ##### Replace PyNeuroML ##########
 WORKDIR $HOME
@@ -135,3 +143,12 @@ RUN sudo /opt/conda/bin/pip install plotly cufflinks
 
 WORKDIR $HOME
 RUN python -c "import sciunit"
+
+COPY stdout_worker.py $HOME/stdout_worker.py
+COPY func2rc.sh $HOME/func2rc.sh
+RUN cat $HOME/func2rc.sh >> ~/.bashrc
+RUN sudo chown -R jovyan /home/jovyan/work
+ENV QT_QPA_PLATFORM offscreen
+ENV PYTHONPATH $PYTHONPATH/home/jovyan/neuronunit/neuronunit/optimization
+RUN /bin/bash -c "source $HOME/func2rc.sh"
+WORKDIR $HOME/neuronunit/neuronunit
