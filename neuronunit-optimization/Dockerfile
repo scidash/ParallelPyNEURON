@@ -175,8 +175,13 @@ WORKDIR $HOME/neuronunit/neuronunit/optimization
 RUN cat nsga_parallel.py
 RUN sudo chown -R jovyan $HOME
 RUN sudo cp $HOME/func2rc.sh .
+RUN conda install -c anaconda python-graphviz
+RUN conda install -c anaconda graphviz
 
 #RUN /bin/bash func2rc.sh
 ENV PYTHONPATH "/home/jovyan/neuronunit"
 RUN echo "the subsequent call looks like a hang, but in fact its a deliberate 10 second sleep"
+# The sequence of statement segmentation is very deliberate and particular:
+# & for put to background, and start a new process in the foreground ';' for serially wait for end of sleep in this process
+# && probably just means the same as ;, finally nsga_parallel should not be put in the background.
 ENTRYPOINT ipcluster start -n 8 --profile=default & sleep 10 ; python stdout_worker.py & ipython -i nsga_parallel.py /bin/bash
