@@ -165,13 +165,18 @@ WORKDIR $HOME/neuronunit/neuronunit
 RUN conda install dask
 WORKDIR $HOME
 RUN rm -r $HOME/neuronunit
+RUN echo "reclone "
 RUN git clone -b dev https://github.com/russelljjarvis/neuronunit.git
 RUN /bin/bash -c "source $HOME/func2rc.sh"
+WORKDIR $HOME/neuronunit/neuronunit/optimization/NeuroML2
+RUN nrnivmodl
 WORKDIR $HOME/neuronunit/neuronunit/optimization
+
 RUN cat nsga_parallel.py
 RUN sudo chown -R jovyan $HOME
 RUN sudo cp $HOME/func2rc.sh .
 
 #RUN /bin/bash func2rc.sh
 ENV PYTHONPATH "/home/jovyan/neuronunit"
+RUN echo "the subsequent call looks like a hang, but in fact its a deliberate 10 second sleep"
 ENTRYPOINT ipcluster start -n 8 --profile=default & sleep 10 ; python stdout_worker.py & ipython -i nsga_parallel.py /bin/bash
