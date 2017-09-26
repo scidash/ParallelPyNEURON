@@ -119,19 +119,18 @@ RUN sudo chown -R jovyan .
 RUN echo "import os">> run_ipp1.p
 
 RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.system('ipcluster start --profile=chase --debug &')"
-WORKDIR $HOME/mnt
+
+WORKDIR $HOME
 RUN sudo chown -R jovyan $HOME
 
 #USER root
 RUN sudo cat /etc/apt/sources.list
 # RUN conda install python-graphviz graphviz
 # Note igraph as distinguished from python-igraph is actually jgraph, something else entirely
+
 RUN sudo apt-get update
 RUN sudo apt-get install -y python-dev graphviz libgraphviz-dev pkg-config
 RUN sudo /opt/conda/bin/pip install git+https://github.com/pygraphviz/pygraphviz.git
 RUN python -c "from networkx.drawing.nx_agraph import graphviz_layout"
 
 RUN sudo /opt/conda/bin/pip install plotly cufflinks
-
-WORKDIR $HOME
-RUN python -c "import sciunit"
