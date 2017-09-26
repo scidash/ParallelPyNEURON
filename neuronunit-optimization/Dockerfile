@@ -77,12 +77,13 @@ RUN pip install --process-dependency-links -e .
 ##### IPython Cluster #####
 USER $NB_USER
 WORKDIR $HOME
+RUN echo "do this"
 RUN ipython profile create default
 RUN pip install git+https://github.com/roryk/ipython-cluster-helper
 # Must be done as root to create directories in /usr/local
 RUN sudo /opt/conda/bin/ipcluster nbextension enable
 
-RUN sudo /opt/conda/bin/pip install git+https://github.com/russelljjarvis/gprof2dot.git
+#RUN sudo /opt/conda/bin/pip install git+https://github.com/russelljjarvis/gprof2dot.git
 
 RUN jupyter nbextension install --sys-prefix --py ipyparallel
 RUN jupyter nbextension enable --sys-prefix --py ipyparallel
@@ -123,7 +124,7 @@ WORKDIR $HOME/neuronunit/neuronunit/tests/
 RUN sudo /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
 RUN  pip install --upgrade neo
 
-RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
+#RUN /opt/conda/bin/pip install https://pypi.python.org/packages/f7/e8/cfad821bc4bc20c2d5ce31dec3378e2791e41ae61a138913ec1462f8d082/neo-0.5.1.tar.gz
 RUN conda install python-graphviz graphviz
 WORKDIR /home/git
 USER root
@@ -136,7 +137,8 @@ RUN sudo chown -R jovyan .
 
 RUN echo "import os">> run_ipp1.p
 
-RUN /opt/conda/bin/ipython3 -c "from ipyparallel import Client; import os; os.system('ipcluster start --profile=chase --debug &')"
+RUN echo "do this"
+RUN /opt/conda/bin/ipython3 -c "import os; os.system('ipcluster start --profile=chase --debug &'); from ipyparallel import Client"
 WORKDIR $HOME/mnt
 RUN sudo chown -R jovyan $HOME
 
@@ -184,4 +186,16 @@ RUN echo "the subsequent call looks like a hang, but in fact its a deliberate 10
 # The sequence of statement segmentation is very deliberate and particular:
 # & for put to background, and start a new process in the foreground ';' for serially wait for end of sleep in this process
 # && probably just means the same as ;, finally nsga_parallel should not be put in the background.
-ENTRYPOINT ipcluster start -n 8 --profile=default & sleep 10 ; python stdout_worker.py & ipython -i nsga_parallel.py /bin/bash
+# ENTRYPOINT ipcluster start -n 8 --profile=default & sleep 10 ; python stdout_worker.py & ipython -i nsga_parallel.py /bin/bash
+
+
+FROM scidash/neuronunit-optimization
+COPY stdout_worker.py $HOME/stdout_worker.py
+COPY func2rc.sh $HOME/func2rc.sh
+RUN cat $HOME/func2rc.sh >> ~/.bashrc
+RUN sudo chown -R jovyan /home/jovyan/work
+ENV QT_QPA_PLATFORM offscreen
+ENV PYTHONPATH $PYTHONPATH/home/jovyan/neuronunit/neuronunit/optimization
+RUN /bin/bash -c "source $HOME/func2rc.sh"
+WORKDIR $HOME/neuronunit/neuronunit
+RUN sudo /opt/conda/bin/pip install dask
