@@ -174,6 +174,8 @@ WORKDIR $HOME/neuronunit/neuronunit/optimization/NeuroML2
 RUN nrnivmodl
 WORKDIR $HOME/neuronunit/neuronunit/optimization
 
+
+
 RUN cat nsga_parallel.py
 RUN sudo chown -R jovyan $HOME
 RUN sudo cp $HOME/func2rc.sh .
