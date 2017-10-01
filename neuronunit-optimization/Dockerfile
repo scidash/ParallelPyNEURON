@@ -38,10 +38,6 @@ RUN pip install bqplot numba
 
 #numba is for optimized code, bqplot is for interactive plotting.
 #RUN conda install mpi4py
-##### Scoop #####
-
-RUN easy_install gevent
-RUN easy_install greenlet
 
 ##### DEAP ######
 WORKDIR $HOME
@@ -89,8 +85,9 @@ RUN jupyter nbextension install --sys-prefix --py ipyparallel
 RUN jupyter nbextension enable --sys-prefix --py ipyparallel
 RUN jupyter serverextension enable --sys-prefix --py ipyparallel
 
-#RUN sudo rm -r /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
+RUN sudo rm -r /opt/conda/lib/python3.5/site-packages/quantities-0.11.1-py3.5.egg
 RUN /opt/conda/bin/pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
+RUN sudo /opt/conda/bin/pip install quantities
 RUN python -c "import quantities as pq"
 RUN python -c "import sciunit.scores"
 
