@@ -20,9 +20,8 @@ RUN apt-get install -y python-tk curl apt-utils
 #RUN sudo chown -R jovyan $HOME
 #RUN sudo chown -R jovyan /opt/conda/lib/python3.5/site-packages/
 
-USER $NB_USER
 RUN pip install --upgrade pip
-RUN pip install -U matplotlib
+RUN pip install matplotlib
 RUN pip install IPython \
                 jupyterhub \
                 notebook \
@@ -31,7 +30,7 @@ RUN pip install IPython \
 		numba
 
 #numba is for optimized code, bqplot is for interactive plotting.
-RUN conda install mpi4py
+RUN conda install mpi4py dask distributed
 
 
 RUN easy_install gevent
@@ -43,11 +42,11 @@ ENV PATH $PATH:/opt/conda/bin/pip
 ENV PATH $PATH:/opt/conda/bin/python
 ENV PATH $PATH:/opt/conda/lib/python3.5/site-packages
 ENV PATH $PATH:$PYTHONPATH
-
+USER jovyan
 RUN printenv PATH
 RUN python -c "import pyneuroml"
 RUN python -c "import neuronunit"
-RUN python -c "from neuronunit.models.reduced import ReducedModel"
+# RUN python -c "from neuronunit.models.reduced import ReducedModel"
 RUN python -c "import quantities"
 RUN python -c "import neuron"
 RUN python -c "import pyneuroml"
