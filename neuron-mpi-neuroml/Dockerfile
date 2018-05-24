@@ -34,11 +34,11 @@ ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 
 WORKDIR $HOME
 RUN \
-  wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz && \
-  tar -xzf nrn-7.4.tar.gz && \
-  rm nrn-7.4.tar.gz
+  wget http://www.neuron.yale.edu/ftp/neuron/versions/v7.5/nrn-7.5.tar.gz && \
+  tar -xzf nrn-7.5.tar.gz && \
+  rm nrn-7.5.tar.gz
 
-WORKDIR $HOME/nrn-7.4
+WORKDIR $HOME/nrn-7.5
 ENV PATH /usr/bin/python3/python:/opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 RUN ./configure --prefix=`pwd` --with-paranrn --without-iv --with-nrnpython=/opt/conda/bin/python3
 RUN sudo make all && \
@@ -49,15 +49,15 @@ RUN make install
 
 WORKDIR src/nrnpython
 RUN python setup.py install
-ENV NEURON_HOME $HOME/nrn-7.4/x86_64
+ENV NEURON_HOME $HOME/nrn-7.5/x86_64
 ENV PATH $NEURON_HOME/bin:$PATH
 
 
 # Get JNeuroML
 #Change to this when PR is accepted
-#RUN git clone https://github.com/NeuroML/jNeuroML
+RUN git clone https://github.com/NeuroML/jNeuroML
 WORKDIR $HOME
-RUN git clone https://github.com/russelljjarvis/jNeuroML.git
+#RUN git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
 RUN python getNeuroML.py
 WORKDIR $WORK_HOME
