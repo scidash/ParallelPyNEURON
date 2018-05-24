@@ -104,3 +104,7 @@ RUN sudo ipython profile create chase
 RUN ipcluster start -n 4 --engines=MPIEngineSetLauncher
 #RUN sudo ipcluster start --profile=chase --debug &
 RUN mpiexec -n 4 ipengine --mpi=mpi4py
+
+RUN sudo chown -R jovyan /home/jovyan/work
+ENV QT_QPA_PLATFORM offscreen
+ENV PYTHONPATH $PYTHONPATH/home/jovyan/work/neuronunit/neuronunit/optimization

@@ -13,6 +13,7 @@ RUN chown -R $NB_USER $HOME
 #Libraries required for building NEURON from source
 
 RUN apt-get update
+RUN apt-get -y install apt-transport-https ca-certificates
 RUN apt-get -y install apt-transport-https curl
 RUN apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
