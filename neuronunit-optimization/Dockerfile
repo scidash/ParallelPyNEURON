@@ -30,7 +30,7 @@ RUN pip install IPython \
 		numba
 
 #numba is for optimized code, bqplot is for interactive plotting.
-RUN conda install mpi4py dask distributed
+RUN conda install dask distributed
 
 
 RUN easy_install gevent
@@ -42,6 +42,14 @@ ENV PATH $PATH:/opt/conda/bin/pip
 ENV PATH $PATH:/opt/conda/bin/python
 ENV PATH $PATH:/opt/conda/lib/python3.5/site-packages
 ENV PATH $PATH:$PYTHONPATH
+
+RUN pip install dask
+RUN pip install tornado zmq
+RUN pip install --upgrade zmq tornado pip
+RUN conda install -c anaconda pyzmq
+RUN conda install -c conda-forge libsodium
+
+
 USER jovyan
 RUN printenv PATH
 RUN python -c "import pyneuroml"
@@ -53,5 +61,8 @@ RUN python -c "import pyneuroml"
 RUN nrnivmodl
 RUN nrniv
 WORKDIR $HOME
+RUN sudo chown -R jovyan $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
+ENTRYPOINT /bin/bash
 
+# RUN pip uninstall tornado
