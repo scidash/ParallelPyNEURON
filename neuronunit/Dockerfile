@@ -12,7 +12,7 @@ RUN git clone -b dev https://github.com/scidash/neuronunit.git
 WORKDIR neuronunit
 RUN pip install --process-dependency-links -e .
 #RUN sudo /opt/conda/bin/python setup.py install
-WORKDIR $WORK_DIR
+WORKDIR $HOME
 # Put the optional local working copy (not the one we just cloned)
 # on the working path.  
 ENV PYTHONPATH $WORK_HOME/sciunit:$PYTHONPATH

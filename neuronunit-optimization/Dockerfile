@@ -28,9 +28,14 @@ RUN pip install IPython \
                 ipykernel \
                 enum34 \
 		numba
+RUN /opt/conda/bin/conda info --envs
+RUN /opt/conda/bin/conda update -n base conda
 
+# RUN conda update -n base conda
 #numba is for optimized code, bqplot is for interactive plotting.
-RUN conda install dask distributed
+RUN conda install -c dask distributed
+RUN conda install -c anaconda pyzmq
+RUN conda install -c conda-forge libsodium
 
 
 RUN easy_install gevent
@@ -46,11 +51,8 @@ ENV PATH $PATH:$PYTHONPATH
 RUN pip install dask
 RUN pip install tornado zmq
 RUN pip install --upgrade zmq tornado pip
-RUN conda install -c anaconda pyzmq
-RUN conda install -c conda-forge libsodium
+USER $NB_USER
 
-
-USER jovyan
 RUN printenv PATH
 RUN python -c "import pyneuroml"
 RUN python -c "import neuronunit"
@@ -61,8 +63,9 @@ RUN python -c "import pyneuroml"
 RUN nrnivmodl
 RUN nrniv
 WORKDIR $HOME
-RUN sudo chown -R jovyan $HOME
+RUN sudo chown -R $NB_USER $HOME
 ENV PYTHONPATH $HOME/neuronunit:$PYTHONPATH
-ENTRYPOINT /bin/bash
+RUN pip install -U jupyter
+# ENTRYPOINT /bin/bash
 
 # RUN pip uninstall tornado

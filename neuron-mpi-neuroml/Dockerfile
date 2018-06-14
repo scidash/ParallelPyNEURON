@@ -59,5 +59,6 @@ RUN git clone https://github.com/NeuroML/jNeuroML
 WORKDIR $HOME
 #RUN git clone https://github.com/russelljjarvis/jNeuroML.git
 WORKDIR jNeuroML
+RUN ls -ltr *.py
 RUN python getNeuroML.py
 WORKDIR $WORK_HOME
