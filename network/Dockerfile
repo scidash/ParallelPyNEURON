@@ -3,6 +3,8 @@
 
 RUN sudo /opt/conda/bin/pip install git+https://github.com/scidash/sciunit.git@dev --process-dependency-links --upgrade
 RUN sudo /opt/conda/bin/conda install -y cython
+RUN sudo /opt/conda/bin/pip install pynn lazyarray
+
 RUN sudo /opt/conda/bin/pip install git+https://github.com/brian-team/brian2.git
   # faster glif
 RUN sudo /opt/conda/bin/pip install git+https://github.com/russelljjarvis/AllenSDK.git
