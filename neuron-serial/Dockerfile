@@ -9,7 +9,8 @@ FROM scidash/scipy-notebook-plus
 #Libraries required for building NEURON from source
 #Also DO this part as root.
 USER root
-
+RUN /opt/conda/bin/conda update conda
+RUN apt-get update -y && apt-get upgrade -y 
 RUN apt-get update && apt-get install -y wget bzip2 ca-certificates default-jre default-jdk maven automake libtool  \
                        wget python3 libpython3-dev libncurses5-dev libreadline-dev libgsl0-dev cython3 \
                        python3-pip python3-numpy python3-scipy python3-matplotlib python3-mock \
@@ -21,25 +22,16 @@ RUN apt-get update && apt-get install -y wget bzip2 ca-certificates default-jre 
 #This will create a more familiar environment to continue developing in.
 #with less of a need to chown and chmod everything done as root at dockerbuild completion
 
-RUN git clone https://github.com/neuronsimulator/nrn
-WORKDIR nrn
 RUN wget https://neuron.yale.edu/ftp/neuron/versions/v7.6/nrn-7.6.x86_64-linux.deb
 RUN dpkg -i nrn-7.6.x86_64-linux.deb
 
-ENV PATH /usr/bin/python3/python:/opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
-
-# RUN ./build.sh
-
-# RUN ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python3
-# RUN make # all
-# RUN make install
-
+ENV PATH /usr/bin/python/python:/opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 
 USER jovyan
-ENV PATH /usr/bin/python3/python:/opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
+ENV PATH /usr/bin/python/python:/opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 
 # Use numpy 1.12.1 until quantities is compatible with 1.13.
-RUN conda install -y scipy numpy==1.12.1 matplotlib
+RUN sudo /opt/conda/bin/conda install -y scipy numpy==1.12.1 matplotlib
 RUN sudo chown -R jovyan /home/jovyan
 ENV HOME /home/jovyan
 ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
@@ -47,21 +39,30 @@ ENV PATH /opt/conda/bin:/opt/conda/bin/conda:/opt/conda/bin/python:$PATH
 RUN wget https://neuron.yale.edu/ftp/neuron/versions/v7.6/nrn-7.6.x86_64-linux.deb
 RUN sudo dpkg -i nrn-7.6.x86_64-linux.deb
 
+RUN sudo git clone https://github.com/neuronsimulator/nrn
+WORKDIR nrn
+RUN sudo apt-get install flex -y
 
-WORKDIR nrn/src/nrnpython
 RUN sudo ./build.sh
 
-RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python3
-RUN sudo make # all
+RUN sudo ./configure --prefix=`pwd` --without-iv --with-nrnpython=/opt/conda/bin/python
+#
+RUN sudo apt-get install bison -y
+RUN sudo apt-get install byacc -y
+RUN cat ./build.sh
+# RUN sudo make
 RUN sudo make install
 
-
-RUN python setup.py install
-ENV NEURON_HOME $HOME/nrn-7.5/x86_64
+ENV NEURON_HOME $HOME/nrn-7.6/x86_64
 ENV PATH $NEURON_HOME/bin:$PATH
 
+# WORKDIR nrn/src/nrnpython
+# RUN python setup.py install
 
-# Get JNeuroML
+
+
+
+# Don't Get JNeuroML it's slow.
 # Change to this when PR is accepted
 # RUN git clone https://github.com/NeuroML/jNeuroML
 # WORKDIR $HOME
