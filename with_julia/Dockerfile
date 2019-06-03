@@ -18,16 +18,16 @@ RUN ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
 RUN mkdir /etc/julia && \
     echo "push!(Libdl.DL_LOAD_PATH, \"$CONDA_DIR/lib\")" >> /etc/julia/juliarc.jl && \
     # Create JULIA_PKGDIR \
-    mkdir $JULIA_PKGDIR 
+    mkdir $JULIA_PKGDIR
 
 RUN julia -e 'import Pkg; Pkg.update()' && \
     (test $TEST_ONLY_BUILD || julia -e 'import Pkg; Pkg.add("HDF5")') && \
     julia -e 'import Pkg; Pkg.add("Gadfly")' && \
     julia -e 'import Pkg; Pkg.add("RDatasets")' && \
-    julia -e 'import Pkg; Pkg.add("IJulia")' && \ 
-    julia -e 'import Pkg; Pkg.add("StatsPlots");Pkg.add("Plots");' 
+    julia -e 'import Pkg; Pkg.add("IJulia")' && \
+    julia -e 'import Pkg; Pkg.add("StatsPlots");Pkg.add("Plots");'
 
-RUN julia -e 'import Pkg; Pkg.add("DataFrames")' 
+RUN julia -e 'import Pkg; Pkg.add("DataFrames")'
 
 RUN julia -e 'import Pkg; Pkg.add("Seaborn"); Pkg.add("PyPlot")'
 RUN julia -e 'import Pkg;Pkg.clone("https://github.com/gsoleilhac/NSGAII.jl")'
@@ -37,4 +37,11 @@ RUN sudo julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia'
 ADD packages.jl .
 RUN sudo chown -R jovyan $HOME
 RUN sudo chown -R jovyan $JULIA_PKGDIR
+#RUN sudo /opt/conda/bin/pip install --upgrade numpy
 RUN julia packages.jl
+RUN sudo /opt/conda/bin/conda install -f numpy
+RUN sudo /opt/conda/bin/conda install nomkl numpy scipy scikit-learn numexpr
+RUN sudo /opt/conda/bin/conda remove mkl mkl-service
+RUN sudo /opt/conda/bin/conda update numpy
+RUN sudo /opt/conda/bin/pip install git+git://github.com/BlueBrain/eFEL
+RUN sudo /opt/conda/bin/pip install --upgrade allensdk
