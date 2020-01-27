@@ -31,6 +31,7 @@ RUN julia -e 'import Pkg; Pkg.add("DataFrames")'
 
 RUN julia -e 'import Pkg; Pkg.add("Seaborn"); Pkg.add("PyPlot")'
 RUN julia -e 'import Pkg;Pkg.clone("https://github.com/gsoleilhac/NSGAII.jl")'
+RUN julia -e 'import Pkg;Pkg.clone("https://github.com/fun-zoological-computing/SNN.jl")'
 USER jovyan
 # Precompile Julia packages \
 RUN sudo julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia'
@@ -45,3 +46,4 @@ RUN sudo /opt/conda/bin/conda remove mkl mkl-service
 RUN sudo /opt/conda/bin/conda update numpy
 RUN sudo /opt/conda/bin/pip install git+git://github.com/BlueBrain/eFEL
 RUN sudo /opt/conda/bin/pip install --upgrade allensdk
+RUN sudo /opt/conda/bin/pip install -e git+https://github.com/scidash/sciunit@dev
