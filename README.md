@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/russelljjarvis/docker-stacks-returned.svg?branch=scidash)](https://travis-ci.com/russelljjarvis/docker-stacks-returned)
+
 # A hierarchy of Docker images for using SciDash tools
 
 Purpose: The building of development environments raises an unnecessary technical problem. In many cases even if someone has the technical capacity to build, it does not mean they will have time to do so. In order to remove this barrier to participation we have created some Docker images to allow people to use our tools. Each of these images serves Jupyter notebooks and including a Python scientific computing stack (extended from jupyter/docker-stacks/scipy-notebook), and some combination of NEURON-7.4, scoop, DEAP, sciunit, and neuronunit.
