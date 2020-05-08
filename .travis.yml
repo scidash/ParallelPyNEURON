@@ -1,15 +1,19 @@
 language: python
+
 python:
-  - "3.5"
-sudo: required
+  - 3.6
 services:
   - docker
-  - git
-  - python
-  
-before_script:
-  - cd ParallelPyNEURON
-  - docker build -t ppn .
-script: 
-  - docker run -it ppn bash
+
+os:
+  - linux
+    
+
+notifications:
+  email: true
+
+before_install:
+  - docker build -t pns .
+script:
+  - docker run pns python $HOME/work/PyPNS/test.py
 
