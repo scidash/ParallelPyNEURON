@@ -13,6 +13,8 @@ RUN chown -R $NB_USER $HOME
 #Libraries required for building NEURON from source
 
 RUN apt-get update
+RUN apt-get -y install apt-transport-https ca-certificates
+RUN apt-get -y install apt-transport-https curl
 RUN apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git gcc g++ build-essential \
@@ -24,7 +26,9 @@ RUN pip install --upgrade pip
 
 # Upgrade to version 2.0
 RUN conda install -y matplotlib
-
+RUN conda update -n base conda
+# RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# RUN bash Miniconda3-latest-Linux-x86_64.sh
 # Make sure every Python file belongs to jovyan
 RUN find /opt/conda ! -user $NB_USER -print0 | xargs -0 -I {} chown -h $NB_USER {}
 # Remove dangling symlinks
